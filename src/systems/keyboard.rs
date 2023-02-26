@@ -1,4 +1,4 @@
-use crate::components::{GameState, CelestialBody, CelestialType};
+use crate::components::{CelestialBody, CelestialType, GameState};
 use bevy::prelude::*;
 
 pub fn handle_escape_key_pressed(
@@ -20,6 +20,6 @@ pub fn handle_reset_key_pressed(
             .iter_mut()
             .filter(|q| *q.celestial_type() == CelestialType::Asteroid)
             .for_each(|mut q| q.reset());
-        state.set(GameState::Following).unwrap();
+        state.set(GameState::FollowingCursor).unwrap();
     }
 }

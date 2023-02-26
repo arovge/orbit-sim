@@ -6,8 +6,9 @@ pub mod components {
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash, Component)]
 pub enum GameState {
-    Following,
-    FreeFall,
+    FollowingCursor,
+    CursorDragStarted,
+    InOrbit,
 }
 
 #[derive(Component)]
@@ -28,13 +29,13 @@ impl CelestialBody {
             radius,
             mass,
             celestial_type,
-            velocity: Vec3::default(),
+            velocity: Vec3::new(0., 961482600000., 0.),
             acceleration: Vec3::default(),
         }
     }
 
     pub fn reset(&mut self) {
-        self.velocity = Vec3::default();
+        self.velocity = Vec3::new(0., 961482600000., 0.);
         self.acceleration = Vec3::default();
     }
 
@@ -59,6 +60,10 @@ impl CelestialBody {
         self.acceleration.y = y_acceleration;
         self.velocity.x += x_acceleration;
         self.velocity.y += y_acceleration;
+    }
+
+    pub fn set_velocity(&mut self, x: f32, y: f32) {
+        self.velocity = Vec3::new(x, y, 0.);
     }
 }
 

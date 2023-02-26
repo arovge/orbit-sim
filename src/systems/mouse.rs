@@ -1,9 +1,45 @@
-use crate::components::*;
+use crate::{components::*, resources::GameResource};
 use bevy::prelude::*;
 
-pub fn handle_mouse_input(mut state: ResMut<State<GameState>>, buttons: Res<Input<MouseButton>>) {
+// TODO: Using this makes me feel like something is wrong somewhere
+// Try refactoring match so this isn't needed
+const MOUSE_SCALE: f32 = 1e10;
+
+pub fn handle_left_cursor_released(
+    mut state: ResMut<State<GameState>>,
+    mut query: Query<&mut CelestialBody>,
+    game_resource: Res<GameResource>,
+    buttons: Res<Input<MouseButton>>,
+    windows: Res<Windows>,
+) {
+    if buttons.just_released(MouseButton::Left) {
+        let end_cursor_position = windows.get_primary().unwrap().cursor_position().unwrap();
+        let start_cursor_position = game_resource.initial_mouse_drag_location().unwrap();
+        let x = end_cursor_position.x - start_cursor_position.x;
+        let y = end_cursor_position.y - start_cursor_position.y;
+
+        query
+            .iter_mut()
+            .filter(|q| *q.celestial_type() == CelestialType::Asteroid)
+            .for_each(|mut q| {
+                q.set_velocity(x * MOUSE_SCALE, y * MOUSE_SCALE);
+            });
+
+        state.set(GameState::InOrbit).unwrap();
+    }
+}
+
+pub fn handle_mouse_input(
+    mut state: ResMut<State<GameState>>,
+    mut game_resource: ResMut<GameResource>,
+    buttons: Res<Input<MouseButton>>,
+    windows: Res<Windows>,
+) {
     if buttons.just_pressed(MouseButton::Left) {
-        state.set(GameState::FreeFall).unwrap();
+        let cursor_position = windows.get_primary().unwrap().cursor_position().unwrap();
+        game_resource.set_initial_mouse_drag_location(cursor_position);
+
+        state.set(GameState::CursorDragStarted).unwrap();
     }
 }
 
