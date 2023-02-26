@@ -1,5 +1,5 @@
-use crate::components::*;
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
+use crate::components::*;
 
 #[derive(Bundle)]
 pub struct CelestialBundle {
