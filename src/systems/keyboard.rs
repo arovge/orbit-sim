@@ -1,6 +1,5 @@
-use bevy::prelude::*;
-
 use crate::components::GameState;
+use bevy::prelude::*;
 
 pub fn handle_escape_key_pressed(
     keys: Res<Input<KeyCode>>,
@@ -11,10 +10,7 @@ pub fn handle_escape_key_pressed(
     }
 }
 
-pub fn handle_reset_key_pressed(
-    keys: Res<Input<KeyCode>>,
-    mut state: ResMut<State<GameState>>,
-) {
+pub fn handle_reset_key_pressed(keys: Res<Input<KeyCode>>, mut state: ResMut<State<GameState>>) {
     if keys.just_pressed(KeyCode::R) {
         state.set(GameState::Following).unwrap();
     }

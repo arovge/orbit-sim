@@ -1,4 +1,3 @@
-
 mod bundles;
 mod components;
 mod systems;
@@ -38,12 +37,12 @@ fn main() {
         .add_system_set(
             SystemSet::on_update(GameState::Following)
                 .with_system(systems::handle_mouse_motion)
-                .with_system(systems::handle_mouse_input)
+                .with_system(systems::handle_mouse_input),
         )
         .add_system_set(
             SystemSet::on_update(GameState::FreeFall)
                 .with_system(systems::handle_freefall)
-                .with_system(systems::handle_reset_key_pressed)
+                .with_system(systems::handle_reset_key_pressed),
         )
         .run();
 }

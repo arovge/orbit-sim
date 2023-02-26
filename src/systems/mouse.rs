@@ -7,14 +7,17 @@ pub fn handle_mouse_input(mut state: ResMut<State<GameState>>, buttons: Res<Inpu
     }
 }
 
-pub fn handle_mouse_motion(windows: Res<Windows>, mut query: Query<(&mut Transform, &CelestialType)>) {
+pub fn handle_mouse_motion(
+    windows: Res<Windows>,
+    mut query: Query<(&mut Transform, &CelestialBody)>,
+) {
     let window = windows.get_primary().unwrap();
     let half_width = window.width() / 2.;
     let half_height = window.height() / 2.;
 
     query
         .iter_mut()
-        .filter(|q| *q.1 == CelestialType::Asteroid)
+        .filter(|q| *q.1.celestial_type() == CelestialType::Asteroid)
         .for_each(|mut q| {
             let Some(cursor_position) = window.cursor_position() else { return };
             q.0.translation.x = cursor_position.x - half_width;

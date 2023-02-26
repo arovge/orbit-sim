@@ -1,12 +1,9 @@
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 use crate::components::*;
+use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
 #[derive(Bundle)]
 pub struct CelestialBundle {
-    radius: Radius,
-    celestial_type: CelestialType,
-    movement: Movement,
-    mass: Mass,
+    body: CelestialBody,
     #[bundle]
     sprite: MaterialMesh2dBundle<ColorMaterial>,
 }
@@ -36,10 +33,7 @@ impl CelestialBundle {
         materials: &mut ResMut<Assets<ColorMaterial>>,
     ) -> Self {
         Self {
-            radius: Radius::new(radius),
-            celestial_type: celestial_type,
-            movement: Movement::new(Vec2::new(0., 0.), Vec2::new(0., 0.)),
-            mass: Mass::new(mass),
+            body: CelestialBody::new(radius, mass, celestial_type),
             sprite: MaterialMesh2dBundle {
                 mesh: meshes.add(shape::Circle::new(radius.into()).into()).into(),
                 material: materials.add(ColorMaterial::from(Color::WHITE)),
