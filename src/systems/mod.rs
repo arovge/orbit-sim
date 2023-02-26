@@ -2,9 +2,9 @@ mod keyboard;
 mod mouse;
 mod orbit;
 
-pub use keyboard::handle_escape_key_pressed;
-pub use keyboard::handle_reset_key_pressed;
-pub use mouse::handle_left_cursor_released;
-pub use mouse::handle_mouse_input;
-pub use mouse::handle_mouse_motion;
+pub use keyboard::check_for_exit_key_press;
+pub use keyboard::check_for_reset_key_press;
+pub use mouse::handle_asteroid_drag_end;
+pub use mouse::handle_asteroid_drag_start;
+pub use mouse::handle_cursor_moved;
 pub use orbit::handle_orbit;

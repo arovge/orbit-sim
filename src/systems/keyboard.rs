@@ -1,7 +1,7 @@
 use crate::components::{CelestialBody, CelestialType, GameState};
 use bevy::prelude::*;
 
-pub fn handle_escape_key_pressed(
+pub fn check_for_exit_key_press(
     keys: Res<Input<KeyCode>>,
     mut app_exit_events: ResMut<Events<bevy::app::AppExit>>,
 ) {
@@ -10,7 +10,7 @@ pub fn handle_escape_key_pressed(
     }
 }
 
-pub fn handle_reset_key_pressed(
+pub fn check_for_reset_key_press(
     keys: Res<Input<KeyCode>>,
     mut state: ResMut<State<GameState>>,
     mut query: Query<&mut CelestialBody>,
