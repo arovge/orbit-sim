@@ -3,27 +3,11 @@ use bevy::prelude::*;
 
 pub fn handle_mouse_input(mut state: ResMut<State<GameState>>, buttons: Res<Input<MouseButton>>) {
     if buttons.just_pressed(MouseButton::Left) {
-        // Left button was pressed
-        println!("left pressed");
         state.set(GameState::FreeFall).unwrap();
-    }
-    if buttons.just_released(MouseButton::Left) {
-        // Left Button was released
-        println!("left released");
-    }
-    if buttons.pressed(MouseButton::Right) {
-        // Right Button is being held down
-
-        println!("right pressed");
-    }
-    // we can check multiple at once with `.any_*`
-    if buttons.any_just_pressed([MouseButton::Left, MouseButton::Right]) {
-        // Either the left or the right button was just pressed
-        println!("left or right pressed");
     }
 }
 
-pub fn handle_mouse_motion(state: Res<State<GameState>>, windows: Res<Windows>, mut query: Query<(&mut Transform, &CelestialType)>) {
+pub fn handle_mouse_motion(windows: Res<Windows>, mut query: Query<(&mut Transform, &CelestialType)>) {
     let window = windows.get_primary().unwrap();
     let half_width = window.width() / 2.;
     let half_height = window.height() / 2.;

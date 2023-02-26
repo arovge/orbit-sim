@@ -1,7 +1,10 @@
-mod systems;
+
+mod bundles;
 mod components;
+mod systems;
 
 use bevy::prelude::*;
+use bundles::*;
 use components::*;
 
 fn setup(
