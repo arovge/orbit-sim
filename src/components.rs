@@ -33,8 +33,30 @@ impl CelestialBody {
         }
     }
 
+    pub fn mass(&self) -> f64 {
+        self.mass
+    }
+
     pub fn celestial_type(&self) -> &CelestialType {
         &self.celestial_type
+    }
+
+    pub fn velocity(&self) -> &Vec2 {
+        &self.velocity
+    }
+
+    pub fn set_velocity(&mut self, x: f32, y: f32) {
+        self.velocity.x = x;
+        self.velocity.y = y;
+    }
+
+    pub fn acceleration(&self) -> &Vec2 {
+        &self.acceleration
+    }
+
+    pub fn set_acceleration(&mut self, x: f64, y: f64) {
+        self.acceleration.x = x as f32;
+        self.acceleration.y = y as f32;
     }
 }
 
