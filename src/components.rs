@@ -33,6 +33,11 @@ impl CelestialBody {
         }
     }
 
+    pub fn reset(&mut self) {
+        self.velocity = Vec2::new(0., 0.);
+        self.acceleration = Vec2::new(0., 0.);
+    }
+
     pub fn mass(&self) -> f64 {
         self.mass
     }
