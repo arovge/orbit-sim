@@ -2,7 +2,6 @@ mod systems;
 mod components;
 
 use bevy::prelude::*;
-use systems::*;
 use components::*;
 
 fn setup(
@@ -32,11 +31,16 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_state(GameState::Following)
         .add_startup_system(setup)
+        .add_system(systems::handle_escape_key_pressed)
         .add_system_set(
             SystemSet::on_update(GameState::Following)
                 .with_system(systems::handle_mouse_motion)
-                .with_system(handle_mouse_input),
+                .with_system(systems::handle_mouse_input)
         )
-        .add_system_set(SystemSet::on_update(GameState::FreeFall).with_system(handle_freefall))
+        .add_system_set(
+            SystemSet::on_update(GameState::FreeFall)
+                .with_system(systems::handle_freefall)
+                .with_system(systems::handle_reset_key_pressed)
+        )
         .run();
 }
