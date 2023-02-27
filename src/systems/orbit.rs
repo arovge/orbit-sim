@@ -36,7 +36,7 @@ pub fn handle_orbit(
                 planet.0.translation.distance(asteroid.0.translation) as f64;
             if asteroid_distance_to_planet < planet.1.radius() + asteroid.1.radius() {
                 asteroid.1.reset();
-                state.set(GameState::FollowingCursor).unwrap();
+                _ = state.set(GameState::FollowingCursor);
             }
         });
     }

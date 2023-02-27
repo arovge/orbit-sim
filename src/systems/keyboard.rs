@@ -19,6 +19,6 @@ pub fn check_for_reset_key_press(
         query
             .iter_mut()
             .for_each(|mut q| q.reset());
-        state.set(GameState::FollowingCursor).unwrap();
+        _ = state.set(GameState::FollowingCursor);
     }
 }

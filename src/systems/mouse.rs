@@ -14,7 +14,7 @@ pub fn handle_asteroid_drag_start(
     if buttons.just_pressed(MouseButton::Left) {
         let cursor_position = windows.get_primary().unwrap().cursor_position().unwrap();
         mouse_drag_resource.set_start_drag_location(cursor_position);
-        state.set(GameState::CursorDragStarted).unwrap();
+        _ = state.set(GameState::CursorDragStarted);
     }
 }
 
@@ -37,7 +37,7 @@ pub fn handle_asteroid_drag_end(
                 q.set_velocity(x * MOUSE_SCALE, y * MOUSE_SCALE);
             });
 
-        state.set(GameState::InOrbit).unwrap();
+        _ = state.set(GameState::InOrbit);
     }
 }
 
