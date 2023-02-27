@@ -26,21 +26,19 @@ pub struct StateText;
 
 #[derive(Component)]
 pub struct Asteroid {
-    radius: f64,
+    radius: f32,
     velocity: Vec3,
-    acceleration: Vec3,
 }
 
 impl Asteroid {
-    pub fn new(radius: f64) -> Self {
+    pub fn new(radius: f32) -> Self {
         Self {
             radius,
             velocity: Vec3::default(),
-            acceleration: Vec3::default(),
         }
     }
 
-    pub fn radius(&self) -> f64 {
+    pub fn radius(&self) -> f32 {
         self.radius
     }
 
@@ -48,18 +46,15 @@ impl Asteroid {
         self.velocity
     }
 
-    pub fn update_physics(&mut self, x_acceleration: f32, y_acceleration: f32) {
-        self.acceleration.x = x_acceleration;
-        self.acceleration.y = y_acceleration;
+    pub fn update_velocity(&mut self, x_acceleration: f32, y_acceleration: f32) {
         self.velocity.x += x_acceleration;
         self.velocity.y += y_acceleration;
     }
 
     pub fn reset(&mut self) {
         self.velocity = Vec3::default();
-        self.acceleration = Vec3::default();
     }
-    
+
     pub fn set_velocity(&mut self, x: f32, y: f32) {
         self.velocity = Vec3::new(x, y, 0.);
     }
@@ -67,19 +62,19 @@ impl Asteroid {
 
 #[derive(Component)]
 pub struct Planet {
-    mass: f64,
-    radius: f64,
+    mass: f32,
+    radius: f32,
 }
 
 impl Planet {
-    pub fn new(mass: f64, radius: f64) -> Self {
+    pub fn new(mass: f32, radius: f32) -> Self {
         Self { mass, radius }
     }
 
-    pub fn mass(&self) -> f64 {
+    pub fn mass(&self) -> f32 {
         self.mass
     }
-    pub fn radius(&self) -> f64 {
+    pub fn radius(&self) -> f32 {
         self.radius
     }
 }
