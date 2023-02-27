@@ -36,6 +36,16 @@ fn setup(
             .with_text_alignment(TextAlignment::BOTTOM_LEFT),
         StateText,
     ));
+    // TOOD: Support dynamically adding more planets
+    // commands.spawn((
+    //     MaterialMesh2dBundle {
+    //         mesh: meshes.add(shape::Circle::new(50.).into()).into(),
+    //         material: materials.add(ColorMaterial::from(Color::WHITE)),
+    //         transform: Transform::from_translation(Vec3::new(-350., 150., 0.)),
+    //         ..default()
+    //     },
+    //     Planet::new(5.972e25, 50.),
+    // ));
     commands.spawn((
         MaterialMesh2dBundle {
             mesh: meshes.add(shape::Circle::new(50.).into()).into(),
