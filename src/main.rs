@@ -3,12 +3,8 @@ mod components;
 mod resources;
 mod systems;
 
-use bevy::prelude::*;
-use bundles::*;
-use components::{
-    components::{StateText},
-    *,
-};
+use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
+use components::{components::StateText, *};
 use resources::*;
 
 fn setup(
@@ -27,24 +23,37 @@ fn setup(
     };
 
     commands.spawn((
-        TextBundle::from_section(
-            GameState::FollowingCursor.description(), 
-            text_style.clone()
-        )
-        .with_style(Style {
-            position_type: PositionType::Absolute,
-            position: UiRect {
-                bottom: Val::Px(15.0),
-                left: Val::Px(15.0),
+        TextBundle::from_section(GameState::FollowingCursor.description(), text_style.clone())
+            .with_style(Style {
+                position_type: PositionType::Absolute,
+                position: UiRect {
+                    bottom: Val::Px(15.0),
+                    left: Val::Px(15.0),
+                    ..default()
+                },
                 ..default()
-            },
-            ..default()
-        })
-        .with_text_alignment(TextAlignment::BOTTOM_LEFT),
+            })
+            .with_text_alignment(TextAlignment::BOTTOM_LEFT),
         StateText,
     ));
-    commands.spawn(CelestialBundle::planet(50., 5.972e25, &mut meshes, &mut materials));
-    commands.spawn(CelestialBundle::asteroid(10., 5.972e25, &mut meshes, &mut materials));
+    commands.spawn((
+        MaterialMesh2dBundle {
+            mesh: meshes.add(shape::Circle::new(50.).into()).into(),
+            material: materials.add(ColorMaterial::from(Color::WHITE)),
+            transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
+            ..default()
+        },
+        Planet::new(5.972e25, 50.),
+    ));
+    commands.spawn((
+        MaterialMesh2dBundle {
+            mesh: meshes.add(shape::Circle::new(10.).into()).into(),
+            material: materials.add(ColorMaterial::from(Color::WHITE)),
+            transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
+            ..default()
+        },
+        Asteroid::new(10.),
+    ));
 }
 
 fn main() {

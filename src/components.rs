@@ -16,7 +16,7 @@ impl GameState {
         match self {
             Self::FollowingCursor => "Following cursor".to_owned(),
             Self::CursorDragStarted => "Dragging".to_owned(),
-            Self::InOrbit => "In orbit".to_owned()
+            Self::InOrbit => "In orbit".to_owned(),
         }
     }
 }
@@ -25,47 +25,27 @@ impl GameState {
 pub struct StateText;
 
 #[derive(Component)]
-pub struct CelestialBody {
-    radius: f32,
-    mass: f64,
-    celestial_type: CelestialType,
-
-    // TODO: Is there a way for position to be owned by this component?
-    // It seems like transform is owned by bundle.sprite on CelestialBundle
+pub struct Asteroid {
+    radius: f64,
     velocity: Vec3,
     acceleration: Vec3,
 }
 
-impl CelestialBody {
-    pub fn new(radius: f32, mass: f64, celestial_type: CelestialType) -> Self {
+impl Asteroid {
+    pub fn new(radius: f64) -> Self {
         Self {
             radius,
-            mass,
-            celestial_type,
-            velocity: Vec3::new(0., 961482600000., 0.),
+            velocity: Vec3::default(),
             acceleration: Vec3::default(),
         }
     }
 
-    pub fn reset(&mut self) {
-        self.velocity = Vec3::new(0., 961482600000., 0.);
-        self.acceleration = Vec3::default();
-    }
-
-    pub fn mass(&self) -> f64 {
-        self.mass
-    }
-
-    pub fn radius(&self) -> f32 {
+    pub fn radius(&self) -> f64 {
         self.radius
     }
 
-    pub fn celestial_type(&self) -> &CelestialType {
-        &self.celestial_type
-    }
-
-    pub fn velocity(&self) -> &Vec3 {
-        &self.velocity
+    pub fn velocity(&self) -> Vec3 {
+        self.velocity
     }
 
     pub fn update_physics(&mut self, x_acceleration: f32, y_acceleration: f32) {
@@ -75,13 +55,31 @@ impl CelestialBody {
         self.velocity.y += y_acceleration;
     }
 
+    pub fn reset(&mut self) {
+        self.velocity = Vec3::default();
+        self.acceleration = Vec3::default();
+    }
+    
     pub fn set_velocity(&mut self, x: f32, y: f32) {
         self.velocity = Vec3::new(x, y, 0.);
     }
 }
 
-#[derive(PartialEq)]
-pub enum CelestialType {
-    Planet,
-    Asteroid,
+#[derive(Component)]
+pub struct Planet {
+    mass: f64,
+    radius: f64,
+}
+
+impl Planet {
+    pub fn new(mass: f64, radius: f64) -> Self {
+        Self { mass, radius }
+    }
+
+    pub fn mass(&self) -> f64 {
+        self.mass
+    }
+    pub fn radius(&self) -> f64 {
+        self.radius
+    }
 }

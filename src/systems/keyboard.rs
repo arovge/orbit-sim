@@ -1,4 +1,4 @@
-use crate::components::{CelestialBody, CelestialType, GameState};
+use crate::components::{GameState, Asteroid};
 use bevy::prelude::*;
 
 pub fn check_for_exit_key_press(
@@ -13,12 +13,11 @@ pub fn check_for_exit_key_press(
 pub fn check_for_reset_key_press(
     keys: Res<Input<KeyCode>>,
     mut state: ResMut<State<GameState>>,
-    mut query: Query<&mut CelestialBody>,
+    mut query: Query<&mut Asteroid>,
 ) {
     if keys.just_pressed(KeyCode::R) {
         query
             .iter_mut()
-            .filter(|q| *q.celestial_type() == CelestialType::Asteroid)
             .for_each(|mut q| q.reset());
         state.set(GameState::FollowingCursor).unwrap();
     }

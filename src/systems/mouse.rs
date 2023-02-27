@@ -20,7 +20,7 @@ pub fn handle_asteroid_drag_start(
 
 pub fn handle_asteroid_drag_end(
     mut state: ResMut<State<GameState>>,
-    mut query: Query<&mut CelestialBody>,
+    mut query: Query<&mut Asteroid>,
     game_resource: Res<MouseDragResource>,
     buttons: Res<Input<MouseButton>>,
     windows: Res<Windows>,
@@ -33,7 +33,6 @@ pub fn handle_asteroid_drag_end(
 
         query
             .iter_mut()
-            .filter(|q| *q.celestial_type() == CelestialType::Asteroid)
             .for_each(|mut q| {
                 q.set_velocity(x * MOUSE_SCALE, y * MOUSE_SCALE);
             });
@@ -44,7 +43,7 @@ pub fn handle_asteroid_drag_end(
 
 pub fn handle_cursor_moved(
     windows: Res<Windows>,
-    mut query: Query<(&mut Transform, &CelestialBody)>,
+    mut query: Query<(&mut Transform, &Asteroid)>,
 ) {
     let window = windows.get_primary().unwrap();
     let half_width = window.width() / 2.;
@@ -52,7 +51,6 @@ pub fn handle_cursor_moved(
 
     query
         .iter_mut()
-        .filter(|q| *q.1.celestial_type() == CelestialType::Asteroid)
         .for_each(|mut q| {
             let Some(cursor_position) = window.cursor_position() else { return };
             q.0.translation.x = cursor_position.x - half_width;
