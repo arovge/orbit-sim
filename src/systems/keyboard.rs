@@ -1,4 +1,4 @@
-use crate::components::{GameState, Asteroid};
+use crate::components::{GameState, Asteroid, Velocity, Planet};
 use bevy::prelude::*;
 
 pub fn check_for_exit_key_press(
@@ -13,12 +13,11 @@ pub fn check_for_exit_key_press(
 pub fn check_for_reset_key_press(
     keys: Res<Input<KeyCode>>,
     mut state: ResMut<State<GameState>>,
-    mut query: Query<&mut Asteroid>,
+    mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
 ) {
     if keys.just_pressed(KeyCode::R) {
-        query
-            .iter_mut()
-            .for_each(|mut q| q.reset());
+        let mut asteroid_velocity = query.single_mut();
+        asteroid_velocity.reset();
         _ = state.set(GameState::FollowingCursor);
     }
 }

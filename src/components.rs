@@ -25,56 +25,62 @@ impl GameState {
 pub struct StateText;
 
 #[derive(Component)]
-pub struct Asteroid {
-    radius: f32,
-    velocity: Vec3,
-}
+pub struct Asteroid;
 
-impl Asteroid {
+#[derive(Component)]
+pub struct Radius(f32);
+
+impl Radius {
     pub fn new(radius: f32) -> Self {
-        Self {
-            radius,
-            velocity: Vec3::default(),
-        }
+        Self(radius)
     }
 
     pub fn radius(&self) -> f32 {
-        self.radius
-    }
-
-    pub fn velocity(&self) -> Vec3 {
-        self.velocity
-    }
-
-    pub fn update_velocity(&mut self, x_acceleration: f32, y_acceleration: f32) {
-        self.velocity.x += x_acceleration;
-        self.velocity.y += y_acceleration;
-    }
-
-    pub fn reset(&mut self) {
-        self.velocity = Vec3::default();
-    }
-
-    pub fn set_velocity(&mut self, x: f32, y: f32) {
-        self.velocity = Vec3::new(x, y, 0.);
+        self.0
     }
 }
 
 #[derive(Component)]
-pub struct Planet {
-    mass: f32,
-    radius: f32,
+pub struct Velocity(Vec3);
+
+impl Default for Velocity {
+    fn default() -> Self {
+        Self(Vec3::default())
+    }
 }
 
-impl Planet {
-    pub fn new(mass: f32, radius: f32) -> Self {
-        Self { mass, radius }
+impl Velocity {
+    pub fn accelerate(&mut self, x_acceleration: f32, y_acceleration: f32) {
+        self.0.x += x_acceleration;
+        self.0.y += y_acceleration;
+    }
+
+    pub fn set(&mut self, x_velocity: f32, y_velocity: f32) {
+        self.0.x = x_velocity;
+        self.0.y = y_velocity;
+    }
+
+    pub fn velocity(&self) -> Vec3 {
+        self.0
+    }
+
+    pub fn reset(&mut self) {
+        self.0 = Vec3::default();
+    }
+}
+
+#[derive(Component)]
+pub struct Planet;
+
+#[derive(Component)]
+pub struct Mass(f32);
+
+impl Mass {
+    pub fn new(mass: f32) -> Self {
+        Self(mass)
     }
 
     pub fn mass(&self) -> f32 {
-        self.mass
-    }
-    pub fn radius(&self) -> f32 {
-        self.radius
+        self.0
     }
 }

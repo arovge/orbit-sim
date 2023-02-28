@@ -44,7 +44,9 @@ fn setup(
     //         transform: Transform::from_translation(Vec3::new(-350., 150., 0.)),
     //         ..default()
     //     },
-    //     Planet::new(5.972e25, 50.),
+    //     Planet,
+    //     Mass::new(5.972e25),
+    //     Radius::new(50.)
     // ));
     commands.spawn((
         MaterialMesh2dBundle {
@@ -53,7 +55,9 @@ fn setup(
             transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
             ..default()
         },
-        Planet::new(5.972e25, 50.),
+        Planet,
+        Mass::new(5.972e25),
+        Radius::new(50.)
     ));
     commands.spawn((
         MaterialMesh2dBundle {
@@ -62,7 +66,9 @@ fn setup(
             transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
             ..default()
         },
-        Asteroid::new(10.),
+        Asteroid,
+        Radius::new(10.),
+        Velocity::default()
     ));
 }
 

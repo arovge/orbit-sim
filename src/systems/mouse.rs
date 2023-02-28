@@ -20,7 +20,7 @@ pub fn handle_asteroid_drag_start(
 
 pub fn handle_asteroid_drag_end(
     mut state: ResMut<State<GameState>>,
-    mut query: Query<&mut Asteroid>,
+    mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
     game_resource: Res<MouseDragResource>,
     buttons: Res<Input<MouseButton>>,
     windows: Res<Windows>,
@@ -31,12 +31,8 @@ pub fn handle_asteroid_drag_end(
         let x = end_cursor_position.x - start_cursor_position.x;
         let y = end_cursor_position.y - start_cursor_position.y;
 
-        query
-            .iter_mut()
-            .for_each(|mut q| {
-                q.set_velocity(x * MOUSE_SCALE, y * MOUSE_SCALE);
-            });
-
+        let mut asteroid_velocity = query.single_mut();
+        asteroid_velocity.set(x * MOUSE_SCALE, y * MOUSE_SCALE);
         _ = state.set(GameState::InOrbit);
     }
 }
