@@ -1,8 +1,6 @@
-mod bundles;
 mod components;
 mod resources;
 mod systems;
-
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 use components::{components::StateText, *};
 use resources::*;
@@ -57,7 +55,7 @@ fn setup(
         },
         Planet,
         Mass::new(5.972e25),
-        Radius::new(50.)
+        Radius::new(50.),
     ));
     commands.spawn((
         MaterialMesh2dBundle {
@@ -68,7 +66,7 @@ fn setup(
         },
         Asteroid,
         Radius::new(10.),
-        Velocity::default()
+        Velocity::default(),
     ));
 }
 

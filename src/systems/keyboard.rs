@@ -1,4 +1,4 @@
-use crate::components::{GameState, Asteroid, Velocity, Planet};
+use crate::components::{Asteroid, GameState, Planet, Velocity};
 use bevy::prelude::*;
 
 pub fn check_for_exit_key_press(

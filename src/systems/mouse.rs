@@ -39,17 +39,14 @@ pub fn handle_asteroid_drag_end(
 
 pub fn handle_cursor_moved(
     windows: Res<Windows>,
-    mut query: Query<(&mut Transform, &Asteroid)>,
+    mut query: Query<&mut Transform, (With<Asteroid>, Without<Planet>)>,
 ) {
     let window = windows.get_primary().unwrap();
     let half_width = window.width() / 2.;
     let half_height = window.height() / 2.;
 
-    query
-        .iter_mut()
-        .for_each(|mut q| {
-            let Some(cursor_position) = window.cursor_position() else { return };
-            q.0.translation.x = cursor_position.x - half_width;
-            q.0.translation.y = cursor_position.y - half_height;
-        });
+    let mut asteroid_transform = query.single_mut();
+    let Some(cursor_position) = window.cursor_position() else { return };
+    asteroid_transform.translation.x = cursor_position.x - half_width;
+    asteroid_transform.translation.y = cursor_position.y - half_height;
 }
