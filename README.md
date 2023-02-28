@@ -9,8 +9,6 @@ This is inspired by the gold standard of orbital simulations: Orbit-sim, an orbi
 To run the program, simply clone the repository and run:
 
 ```bash
-git clone https://github.com/arovge/orbit-sim.git
-cd orbit-sim
 cargo run
 ```
 
