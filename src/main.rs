@@ -1,10 +1,12 @@
 mod components;
 mod resources;
+mod state;
 mod systems;
 
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 use components::{components::StateText, *};
 use resources::*;
+use state::*;
 
 fn setup(
     mut commands: Commands,
@@ -47,7 +49,7 @@ fn setup(
                 ..default()
             })
             .with_text_alignment(TextAlignment::BOTTOM_RIGHT),
-            CoordinatesText,
+        CoordinatesText,
     ));
     // TOOD: Support dynamically adding more planets
     commands.spawn((
@@ -59,7 +61,7 @@ fn setup(
         },
         Planet,
         Mass::new(5.972e25),
-        Radius::new(50.)
+        Radius::new(50.),
     ));
     commands.spawn((
         MaterialMesh2dBundle {
@@ -95,6 +97,7 @@ fn main() {
         .add_system(systems::check_for_exit_key_press)
         .add_system(systems::update_state_text)
         .add_system(systems::update_coordinates_text)
+        .add_system(systems::check_for_insert_mode_toggle)
         .add_system_set(
             SystemSet::on_update(GameState::FollowingCursor)
                 .with_system(systems::handle_cursor_moved)
@@ -109,6 +112,11 @@ fn main() {
             SystemSet::on_update(GameState::InOrbit)
                 .with_system(systems::handle_orbit)
                 .with_system(systems::check_for_reset_key_press),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::EditPlanets)
+                .with_system(systems::handle_cursor_moved)
+                .with_system(systems::handle_edit_planets),
         )
         .run();
 }

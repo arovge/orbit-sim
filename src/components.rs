@@ -4,28 +4,14 @@ pub mod components {
     pub use crate::components::*;
 }
 
-#[derive(Clone, Eq, PartialEq, Debug, Hash, Component)]
-pub enum GameState {
-    FollowingCursor,
-    CursorDragStarted,
-    InOrbit,
-}
-
-impl GameState {
-    pub fn description(&self) -> String {
-        match self {
-            Self::FollowingCursor => "Following cursor".to_owned(),
-            Self::CursorDragStarted => "Dragging".to_owned(),
-            Self::InOrbit => "In orbit".to_owned(),
-        }
-    }
-}
-
 #[derive(Component)]
 pub struct StateText;
 
 #[derive(Component)]
 pub struct CoordinatesText;
+
+#[derive(Component)]
+pub struct ModeText;
 
 #[derive(Component)]
 pub struct Asteroid;

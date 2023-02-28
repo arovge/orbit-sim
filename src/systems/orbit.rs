@@ -1,4 +1,5 @@
 use crate::components::*;
+use crate::state::GameState;
 use bevy::prelude::*;
 
 const GRAVITATIONAL_CONSTANT: f32 = 6.674e-11;
