@@ -1,6 +1,7 @@
 mod components;
 mod resources;
 mod systems;
+
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 use components::{components::StateText, *};
 use resources::*;
@@ -25,8 +26,8 @@ fn setup(
             .with_style(Style {
                 position_type: PositionType::Absolute,
                 position: UiRect {
-                    bottom: Val::Px(15.0),
-                    left: Val::Px(15.0),
+                    bottom: Val::Px(15.),
+                    left: Val::Px(15.),
                     ..default()
                 },
                 ..default()
@@ -34,18 +35,32 @@ fn setup(
             .with_text_alignment(TextAlignment::BOTTOM_LEFT),
         StateText,
     ));
+    commands.spawn((
+        TextBundle::from_section("0, 0", text_style.clone())
+            .with_style(Style {
+                position_type: PositionType::Absolute,
+                position: UiRect {
+                    bottom: Val::Px(15.),
+                    right: Val::Px(15.),
+                    ..default()
+                },
+                ..default()
+            })
+            .with_text_alignment(TextAlignment::BOTTOM_RIGHT),
+            CoordinatesText,
+    ));
     // TOOD: Support dynamically adding more planets
-    // commands.spawn((
-    //     MaterialMesh2dBundle {
-    //         mesh: meshes.add(shape::Circle::new(50.).into()).into(),
-    //         material: materials.add(ColorMaterial::from(Color::WHITE)),
-    //         transform: Transform::from_translation(Vec3::new(-350., 150., 0.)),
-    //         ..default()
-    //     },
-    //     Planet,
-    //     Mass::new(5.972e25),
-    //     Radius::new(50.)
-    // ));
+    commands.spawn((
+        MaterialMesh2dBundle {
+            mesh: meshes.add(shape::Circle::new(50.).into()).into(),
+            material: materials.add(ColorMaterial::from(Color::WHITE)),
+            transform: Transform::from_translation(Vec3::new(-350., 150., 0.)),
+            ..default()
+        },
+        Planet,
+        Mass::new(5.972e25),
+        Radius::new(50.)
+    ));
     commands.spawn((
         MaterialMesh2dBundle {
             mesh: meshes.add(shape::Circle::new(50.).into()).into(),
@@ -79,6 +94,7 @@ fn main() {
         .add_startup_system(setup)
         .add_system(systems::check_for_exit_key_press)
         .add_system(systems::update_state_text)
+        .add_system(systems::update_coordinates_text)
         .add_system_set(
             SystemSet::on_update(GameState::FollowingCursor)
                 .with_system(systems::handle_cursor_moved)

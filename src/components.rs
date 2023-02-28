@@ -25,6 +25,9 @@ impl GameState {
 pub struct StateText;
 
 #[derive(Component)]
+pub struct CoordinatesText;
+
+#[derive(Component)]
 pub struct Asteroid;
 
 #[derive(Component)]
