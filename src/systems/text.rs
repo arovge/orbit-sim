@@ -18,6 +18,6 @@ pub fn update_coordinates_text(
     let asteroid_translation = asteroid_query.single().translation;
     for mut text in text_query.iter_mut() {
         text.sections[0].value =
-            format!("{0}, {1}", asteroid_translation.x, asteroid_translation.y);
+            format!("{0:.2}, {1:.2}", asteroid_translation.x, asteroid_translation.y);
     }
 }

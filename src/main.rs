@@ -51,7 +51,6 @@ fn setup(
             .with_text_alignment(TextAlignment::BOTTOM_RIGHT),
         CoordinatesText,
     ));
-    // TOOD: Support dynamically adding more planets
     commands.spawn((
         MaterialMesh2dBundle {
             mesh: meshes.add(shape::Circle::new(50.).into()).into(),

@@ -30,9 +30,9 @@ pub fn handle_orbit(
             let dx = planet_transform.translation.x - asteroid_transform.translation.x;
             let theta = dy.atan2(dx);
 
-            let new_x_acceleration = theta.cos() * gravity;
-            let new_y_acceleration = theta.sin() * gravity;
-            asteroid_velocity.accelerate(new_x_acceleration, new_y_acceleration);
+            let x_acceleration = theta.cos() * gravity;
+            let y_acceleration = theta.sin() * gravity;
+            asteroid_velocity.accelerate(x_acceleration, y_acceleration);
 
             asteroid_transform.translation.x += asteroid_velocity.velocity().x * SLOW_RATIO;
             asteroid_transform.translation.y += asteroid_velocity.velocity().y * SLOW_RATIO;

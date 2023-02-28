@@ -14,7 +14,7 @@ impl GameState {
             Self::FollowingCursor => "Following cursor".to_owned(),
             Self::CursorDragStarted => "Dragging".to_owned(),
             Self::InOrbit => "In orbit".to_owned(),
-            Self::EditPlanets => "Insert planet".to_owned(),
+            Self::EditPlanets => "Edit planets".to_owned(),
         }
     }
 }
