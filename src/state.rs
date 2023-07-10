@@ -1,7 +1,8 @@
-use bevy::prelude::Component;
+use bevy::prelude::{Component, States};
 
-#[derive(Clone, Eq, PartialEq, Debug, Hash, Component)]
+#[derive(Clone, Eq, PartialEq, Debug, Hash, Component, States, Default)]
 pub enum GameState {
+    #[default]
     FollowingCursor,
     CursorDragStarted,
     InOrbit,

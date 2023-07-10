@@ -7,7 +7,7 @@ pub fn update_state_text(
     mut query: Query<&mut Text, With<StateText>>,
 ) {
     for mut text in query.iter_mut() {
-        text.sections[0].value = state.current().description();
+        text.sections[0].value = state.0.description();
     }
 }
 

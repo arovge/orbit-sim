@@ -9,7 +9,7 @@ const GRAVITATIONAL_CONSTANT: f32 = 6.674e-11;
 const SLOW_RATIO: f32 = 1e-12;
 
 pub fn handle_orbit(
-    mut state: ResMut<State<GameState>>,
+    mut state: ResMut<NextState<GameState>>,
     planets_query: Query<(&Transform, &Mass, &Radius), (With<Planet>, Without<Asteroid>)>,
     mut asteroids_query: Query<
         (&mut Transform, &mut Velocity, &Radius),
@@ -43,7 +43,7 @@ pub fn handle_orbit(
                 .distance(asteroid_transform.translation);
             if asteroid_distance_to_planet < planet_radius.radius() + asteroid_radius.radius() {
                 asteroid_velocity.reset();
-                _ = state.set(GameState::FollowingCursor);
+                state.set(GameState::FollowingCursor);
             }
         }
     }

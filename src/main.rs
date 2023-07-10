@@ -34,7 +34,7 @@ fn setup(
                 },
                 ..default()
             })
-            .with_text_alignment(TextAlignment::BOTTOM_LEFT),
+            .with_text_alignment(TextAlignment::Left),
         StateText,
     ));
     commands.spawn((
@@ -48,7 +48,7 @@ fn setup(
                 },
                 ..default()
             })
-            .with_text_alignment(TextAlignment::BOTTOM_RIGHT),
+            .with_text_alignment(TextAlignment::Right),
         CoordinatesText,
     ));
     commands.spawn((
@@ -90,32 +90,28 @@ fn main() {
     App::new()
         .insert_resource(ClearColor(Color::BLACK))
         .add_plugins(DefaultPlugins)
-        .add_state(GameState::FollowingCursor)
+        .add_state::<GameState>()
         .init_resource::<MouseDragResource>()
         .add_startup_system(setup)
         .add_system(systems::check_for_exit_key_press)
         .add_system(systems::update_state_text)
         .add_system(systems::update_coordinates_text)
         .add_system(systems::check_for_insert_mode_toggle)
-        .add_system_set(
-            SystemSet::on_update(GameState::FollowingCursor)
-                .with_system(systems::handle_cursor_moved)
-                .with_system(systems::handle_asteroid_drag_start),
-        )
-        .add_system_set(
-            SystemSet::on_update(GameState::CursorDragStarted)
-                .with_system(systems::check_for_reset_key_press)
-                .with_system(systems::handle_asteroid_drag_end),
-        )
-        .add_system_set(
-            SystemSet::on_update(GameState::InOrbit)
-                .with_system(systems::handle_orbit)
-                .with_system(systems::check_for_reset_key_press),
-        )
-        .add_system_set(
-            SystemSet::on_update(GameState::EditPlanets)
-                .with_system(systems::handle_cursor_moved)
-                .with_system(systems::handle_edit_planets),
-        )
+
+        // GameState::FollowingCursor
+        .add_system(systems::handle_cursor_moved.in_set(OnUpdate(GameState::FollowingCursor)))
+        .add_system(systems::handle_asteroid_drag_start.in_set(OnUpdate(GameState::FollowingCursor)))
+
+        // GameState::CursorDragStarted
+        .add_system(systems::check_for_reset_key_press.in_set(OnUpdate(GameState::CursorDragStarted)))
+        .add_system(systems::handle_asteroid_drag_end.in_set(OnUpdate(GameState::CursorDragStarted)))
+
+        // GameState::InOrbit
+        .add_system(systems::handle_orbit.in_set(OnUpdate(GameState::InOrbit)))
+        .add_system(systems::check_for_reset_key_press.in_set(OnUpdate(GameState::InOrbit)))
+
+        // GameState::EditPlanets
+        .add_system(systems::handle_cursor_moved.in_set(OnUpdate(GameState::EditPlanets)))
+        .add_system(systems::handle_edit_planets.in_set(OnUpdate(GameState::EditPlanets)))
         .run();
 }

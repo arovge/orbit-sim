@@ -1,5 +1,6 @@
 use crate::state::GameState;
 use crate::{components::*, resources::MouseDragResource};
+use bevy::window::PrimaryWindow;
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
 // TODO: Using this makes me feel like something is wrong somewhere
@@ -7,42 +8,42 @@ use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 const MOUSE_SCALE: f32 = 1e10;
 
 pub fn handle_asteroid_drag_start(
-    mut state: ResMut<State<GameState>>,
+    mut state: ResMut<NextState<GameState>>,
     mut mouse_drag_resource: ResMut<MouseDragResource>,
     buttons: Res<Input<MouseButton>>,
-    windows: Res<Windows>,
+    windows: Query<&Window, With<PrimaryWindow>>,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
-        let cursor_position = windows.get_primary().unwrap().cursor_position().unwrap();
+        let cursor_position = windows.get_single().unwrap().cursor_position().unwrap();
         mouse_drag_resource.set_start_drag_location(cursor_position);
-        _ = state.set(GameState::CursorDragStarted);
+        state.set(GameState::CursorDragStarted);
     }
 }
 
 pub fn handle_asteroid_drag_end(
-    mut state: ResMut<State<GameState>>,
+    mut state: ResMut<NextState<GameState>>,
     mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
     game_resource: Res<MouseDragResource>,
     buttons: Res<Input<MouseButton>>,
-    windows: Res<Windows>,
+    windows: Query<&Window, With<PrimaryWindow>>,
 ) {
     if buttons.just_released(MouseButton::Left) {
-        let end_cursor_position = windows.get_primary().unwrap().cursor_position().unwrap();
+        let end_cursor_position = windows.get_single().unwrap().cursor_position().unwrap();
         let start_cursor_position = game_resource.start_drag_location().unwrap();
         let x = end_cursor_position.x - start_cursor_position.x;
         let y = end_cursor_position.y - start_cursor_position.y;
 
         let mut asteroid_velocity = query.single_mut();
         asteroid_velocity.set(x * MOUSE_SCALE, y * MOUSE_SCALE);
-        _ = state.set(GameState::InOrbit);
+        state.set(GameState::InOrbit);
     }
 }
 
 pub fn handle_cursor_moved(
-    windows: Res<Windows>,
+    windows: Query<&Window, With<PrimaryWindow>>,
     mut query: Query<&mut Transform, (With<Asteroid>, Without<Planet>)>,
 ) {
-    let window = windows.get_primary().unwrap();
+    let Ok(window) = windows.get_single() else { return };
     let half_width = window.width() / 2.;
     let half_height = window.height() / 2.;
 
@@ -53,7 +54,7 @@ pub fn handle_cursor_moved(
 }
 
 pub fn handle_edit_planets(
-    windows: Res<Windows>,
+    windows: Query<&Window, With<PrimaryWindow>>,
     buttons: Res<Input<MouseButton>>,
     mut planets_query: Query<(Entity, &Transform, &Radius), (With<Planet>, Without<Asteroid>)>,
     mut commands: Commands,
@@ -61,7 +62,7 @@ pub fn handle_edit_planets(
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
-        let window = windows.get_primary().unwrap();
+        let window = windows.get_single().unwrap();
         let half_width = window.width() / 2.;
         let half_height = window.height() / 2.;
         let cursor_position = window.cursor_position().unwrap();
@@ -85,7 +86,7 @@ pub fn handle_edit_planets(
         ));
     }
     if buttons.just_pressed(MouseButton::Right) {
-        let window = windows.get_primary().unwrap();
+        let window = windows.get_single().unwrap();
         let half_width = window.width() / 2.;
         let half_height = window.height() / 2.;
         let cursor_position = window.cursor_position().unwrap();
