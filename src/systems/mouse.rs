@@ -31,7 +31,7 @@ pub fn handle_asteroid_drag_end(
         let end_cursor_position = windows.get_single().unwrap().cursor_position().unwrap();
         let start_cursor_position = game_resource.start_drag_location().unwrap();
         let x = end_cursor_position.x - start_cursor_position.x;
-        let y = end_cursor_position.y - start_cursor_position.y;
+        let y = start_cursor_position.y - end_cursor_position.y;
 
         let mut asteroid_velocity = query.single_mut();
         asteroid_velocity.set(x * MOUSE_SCALE, y * MOUSE_SCALE);
@@ -50,7 +50,7 @@ pub fn handle_cursor_moved(
     let mut asteroid_transform = query.single_mut();
     let Some(cursor_position) = window.cursor_position() else { return };
     asteroid_transform.translation.x = cursor_position.x - half_width;
-    asteroid_transform.translation.y = cursor_position.y - half_height;
+    asteroid_transform.translation.y = half_height - cursor_position.y;
 }
 
 pub fn handle_edit_planets(
@@ -69,7 +69,7 @@ pub fn handle_edit_planets(
 
         let position = Vec3::new(
             cursor_position.x - half_width,
-            cursor_position.y - half_height,
+            half_height - cursor_position.y,
             0.,
         );
 
@@ -92,7 +92,7 @@ pub fn handle_edit_planets(
         let cursor_position = window.cursor_position().unwrap();
         let delete_position = Vec3::new(
             cursor_position.x - half_width,
-            cursor_position.y - half_height,
+            half_height - cursor_position.y,
             0.,
         );
         
