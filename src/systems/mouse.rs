@@ -95,7 +95,7 @@ pub fn handle_edit_planets(
             half_height - cursor_position.y,
             0.,
         );
-        
+
         for (planet_entity, planet_transform, radius) in planets_query.iter_mut() {
             let distance = planet_transform.translation.distance(delete_position);
             if distance < radius.radius() {

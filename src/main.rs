@@ -87,27 +87,40 @@ fn main() {
         .add_state::<GameState>()
         .init_resource::<MouseDragResource>()
         .add_systems(Startup, setup)
-        .add_systems(Update, (
-            systems::check_for_exit_key_press,
-            systems::update_state_text,
-            systems::update_coordinates_text,
-            systems::check_for_insert_mode_toggle,
-        ))
-        .add_systems(Update, (
-            systems::handle_cursor_moved,
-            systems::handle_asteroid_drag_start,
-        ).run_if(in_state(GameState::FollowingCursor)))
-        .add_systems(Update, (
-            systems::check_for_reset_key_press,
-            systems::handle_asteroid_drag_end,
-        ).run_if(in_state(GameState::CursorDragStarted)))
-        .add_systems(Update, (
-            systems::handle_orbit,
-            systems::check_for_reset_key_press,
-        ).run_if(in_state(GameState::InOrbit)))
-        .add_systems(Update, (
-            systems::handle_cursor_moved,
-            systems::handle_edit_planets,
-        ).run_if(in_state(GameState::EditPlanets)))
+        .add_systems(
+            Update,
+            (
+                systems::check_for_exit_key_press,
+                systems::update_state_text,
+                systems::update_coordinates_text,
+                systems::check_for_insert_mode_toggle,
+            ),
+        )
+        .add_systems(
+            Update,
+            (
+                systems::handle_cursor_moved,
+                systems::handle_asteroid_drag_start,
+            )
+                .run_if(in_state(GameState::FollowingCursor)),
+        )
+        .add_systems(
+            Update,
+            (
+                systems::check_for_reset_key_press,
+                systems::handle_asteroid_drag_end,
+            )
+                .run_if(in_state(GameState::CursorDragStarted)),
+        )
+        .add_systems(
+            Update,
+            (systems::handle_orbit, systems::check_for_reset_key_press)
+                .run_if(in_state(GameState::InOrbit)),
+        )
+        .add_systems(
+            Update,
+            (systems::handle_cursor_moved, systems::handle_edit_planets)
+                .run_if(in_state(GameState::EditPlanets)),
+        )
         .run();
 }
