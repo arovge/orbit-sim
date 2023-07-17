@@ -8,7 +8,7 @@ use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 const MOUSE_SCALE: f32 = 1e10;
 
 pub fn handle_asteroid_drag_start(
-    mut state: ResMut<NextState<GameState>>,
+    mut next_state: ResMut<NextState<GameState>>,
     mut mouse_drag_resource: ResMut<MouseDragResource>,
     buttons: Res<Input<MouseButton>>,
     windows: Query<&Window, With<PrimaryWindow>>,
@@ -16,12 +16,12 @@ pub fn handle_asteroid_drag_start(
     if buttons.just_pressed(MouseButton::Left) {
         let cursor_position = windows.get_single().unwrap().cursor_position().unwrap();
         mouse_drag_resource.set_start_drag_location(cursor_position);
-        state.set(GameState::CursorDragStarted);
+        next_state.set(GameState::CursorDragStarted);
     }
 }
 
 pub fn handle_asteroid_drag_end(
-    mut state: ResMut<NextState<GameState>>,
+    mut next_state: ResMut<NextState<GameState>>,
     mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
     game_resource: Res<MouseDragResource>,
     buttons: Res<Input<MouseButton>>,
@@ -35,7 +35,7 @@ pub fn handle_asteroid_drag_end(
 
         let mut asteroid_velocity = query.single_mut();
         asteroid_velocity.set(x * MOUSE_SCALE, y * MOUSE_SCALE);
-        state.set(GameState::InOrbit);
+        next_state.set(GameState::InOrbit);
     }
 }
 

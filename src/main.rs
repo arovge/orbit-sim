@@ -92,6 +92,7 @@ fn main() {
             (
                 systems::keyboard::check_for_exit_key_press,
                 systems::keyboard::check_for_insert_mode_toggle,
+                systems::keyboard::check_for_reset_key_press,
                 systems::text::update_state_text,
                 systems::text::update_coordinates_text,
             ),
@@ -107,7 +108,6 @@ fn main() {
         .add_systems(
             Update,
             (
-                systems::keyboard::check_for_reset_key_press,
                 systems::mouse::handle_asteroid_drag_end,
             )
                 .run_if(in_state(GameState::CursorDragStarted)),
@@ -116,14 +116,12 @@ fn main() {
             Update,
             (
                 systems::orbit::handle_orbit,
-                systems::keyboard::check_for_reset_key_press,
             )
                 .run_if(in_state(GameState::InOrbit)),
         )
         .add_systems(
             Update,
             (
-                systems::keyboard::check_for_insert_mode_toggle,
                 systems::mouse::handle_cursor_moved,
                 systems::mouse::handle_edit_planets,
             )
