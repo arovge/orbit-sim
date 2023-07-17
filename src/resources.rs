@@ -1,20 +1,11 @@
 use bevy::prelude::{Resource, Vec2};
 
-#[derive(Resource, Debug)]
+#[derive(Resource, Debug, Default)]
 pub struct MouseDragResource {
     // TODO: Maybe this can be stored somewhere better. I originally wanted this to be part of
-    // game state, but f32/f64 doesn't conform to the Hash trait.
-    // Maybe could serialize it to a string but that also feels wrong
+    // game state, but `derive(States) only supports fieldless enums`.
     // This doesn't really work with the type system and it should
     start_drag_location: Option<Vec2>,
-}
-
-impl Default for MouseDragResource {
-    fn default() -> Self {
-        Self {
-            start_drag_location: None,
-        }
-    }
 }
 
 impl MouseDragResource {

@@ -1,9 +1,5 @@
 use bevy::prelude::*;
 
-pub mod components {
-    pub use crate::components::*;
-}
-
 #[derive(Component)]
 pub struct StateText;
 
@@ -29,14 +25,8 @@ impl Radius {
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Velocity(Vec3);
-
-impl Default for Velocity {
-    fn default() -> Self {
-        Self(Vec3::default())
-    }
-}
 
 impl Velocity {
     pub fn accelerate(&mut self, x_acceleration: f32, y_acceleration: f32) {

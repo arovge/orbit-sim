@@ -3,8 +3,8 @@ mod resources;
 mod state;
 mod systems;
 
+use crate::components::{StateText, *};
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
-use components::{components::StateText, *};
 use resources::*;
 use state::*;
 
@@ -35,7 +35,7 @@ fn setup(
         StateText,
     ));
     commands.spawn((
-        TextBundle::from_section("0, 0", text_style.clone())
+        TextBundle::from_section("0, 0", text_style)
             .with_style(Style {
                 position_type: PositionType::Absolute,
                 bottom: Val::Px(15.),
@@ -123,6 +123,7 @@ fn main() {
         .add_systems(
             Update,
             (
+                systems::keyboard::check_for_insert_mode_toggle,
                 systems::mouse::handle_cursor_moved,
                 systems::mouse::handle_edit_planets,
             )

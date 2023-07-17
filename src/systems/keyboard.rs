@@ -28,7 +28,7 @@ pub fn check_for_insert_mode_toggle(
     mut state: ResMut<NextState<GameState>>,
 ) {
     if keys.just_pressed(KeyCode::I) {
-        _ = match state.0 {
+        match state.0 {
             Some(GameState::EditPlanets) => state.set(GameState::FollowingCursor),
             _ => state.set(GameState::EditPlanets),
         };
