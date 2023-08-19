@@ -1,26 +1,22 @@
+use crate::components::*;
 use crate::state::GameState;
-use crate::{components::*, resources::MouseDragResource};
 use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
-use bevy::window::PrimaryWindow;
+
+const GRAVITATIONAL_CONSTANT: f32 = 6.674e-11;
 
 // TODO: Using this makes me feel like something is wrong somewhere
 // Try refactoring match so this isn't needed
-const MOUSE_SCALE: f32 = 1e10;
+const SLOW_RATIO: f32 = 1e-12;
 
 pub struct AsteroidPlugin;
 
 impl Plugin for AsteroidPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_asteroid)
-            .add_systems(
-                Update,
-                handle_asteroid_drag_start.run_if(in_state(GameState::FollowingCursor)),
-            )
-            .add_systems(
-                Update,
-                (handle_asteroid_drag_end,).run_if(in_state(GameState::CursorDragStarted)),
-            );
+        app.add_systems(Startup, setup_asteroid).add_systems(
+            Update,
+            handle_asteroid_orbit.run_if(in_state(GameState::InOrbit)),
+        );
     }
 }
 
@@ -42,34 +38,43 @@ fn setup_asteroid(
     ));
 }
 
-fn handle_asteroid_drag_start(
+fn handle_asteroid_orbit(
     mut next_state: ResMut<NextState<GameState>>,
-    mut mouse_drag_resource: ResMut<MouseDragResource>,
-    buttons: Res<Input<MouseButton>>,
-    windows: Query<&Window, With<PrimaryWindow>>,
+    planets_query: Query<(&Transform, &Mass, &Radius), (With<Planet>, Without<Asteroid>)>,
+    mut asteroids_query: Query<
+        (&mut Transform, &mut Velocity, &Radius),
+        (With<Asteroid>, Without<Planet>),
+    >,
 ) {
-    if buttons.just_pressed(MouseButton::Left) {
-        let cursor_position = windows.get_single().unwrap().cursor_position().unwrap();
-        mouse_drag_resource.set_start_drag_location(cursor_position);
-        next_state.set(GameState::CursorDragStarted);
-    }
-}
+    for planet in planets_query.iter() {
+        let (planet_transform, planet_mass, planet_radius) = planet;
 
-fn handle_asteroid_drag_end(
-    mut next_state: ResMut<NextState<GameState>>,
-    mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
-    game_resource: Res<MouseDragResource>,
-    buttons: Res<Input<MouseButton>>,
-    windows: Query<&Window, With<PrimaryWindow>>,
-) {
-    if buttons.just_released(MouseButton::Left) {
-        let end_cursor_position = windows.get_single().unwrap().cursor_position().unwrap();
-        let start_cursor_position = game_resource.start_drag_location().unwrap();
-        let x = end_cursor_position.x - start_cursor_position.x;
-        let y = start_cursor_position.y - end_cursor_position.y;
+        for asteroid in asteroids_query.iter_mut() {
+            let (mut asteroid_transform, mut asteroid_velocity, asteroid_radius) = asteroid;
+            let distance = planet_transform
+                .translation
+                .distance(asteroid_transform.translation);
+            let gravity = GRAVITATIONAL_CONSTANT * (planet_mass.mass() / distance.powi(2));
 
-        let mut asteroid_velocity = query.single_mut();
-        asteroid_velocity.set(x * MOUSE_SCALE, y * MOUSE_SCALE);
-        next_state.set(GameState::InOrbit);
+            let dy = planet_transform.translation.y - asteroid_transform.translation.y;
+            let dx = planet_transform.translation.x - asteroid_transform.translation.x;
+            let theta = dy.atan2(dx);
+
+            let x_acceleration = theta.cos() * gravity;
+            let y_acceleration = theta.sin() * gravity;
+            asteroid_velocity.accelerate(x_acceleration, y_acceleration);
+
+            asteroid_transform.translation.x += asteroid_velocity.velocity().x * SLOW_RATIO;
+            asteroid_transform.translation.y += asteroid_velocity.velocity().y * SLOW_RATIO;
+
+            // If the asteroid is touching a planet, reset the game
+            let asteroid_distance_to_planet = planet_transform
+                .translation
+                .distance(asteroid_transform.translation);
+            if asteroid_distance_to_planet < planet_radius.radius() + asteroid_radius.radius() {
+                asteroid_velocity.reset();
+                next_state.set(GameState::FollowingCursor);
+            }
+        }
     }
 }

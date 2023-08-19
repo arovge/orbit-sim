@@ -7,8 +7,8 @@ use bevy::prelude::*;
 use resources::*;
 use state::*;
 use systems::{
-    asteroid::AsteroidPlugin, keyboard::KeyboardPlugin, mouse::MousePlugin, orbit::OrbitPlugin,
-    planet::PlanetPlugin, text::TextPlugin,
+    asteroid::AsteroidPlugin, cursor::CursorPlugin, keyboard::KeyboardPlugin, planet::PlanetPlugin,
+    text::TextPlugin,
 };
 
 fn setup(mut commands: Commands) {
@@ -20,13 +20,12 @@ fn main() {
         .insert_resource(ClearColor(Color::BLACK))
         .add_plugins(DefaultPlugins)
         .add_state::<GameState>()
-        .init_resource::<MouseDragResource>()
+        .init_resource::<CursorDragResource>()
         .add_systems(Startup, setup)
         .add_plugins((
             AsteroidPlugin,
+            CursorPlugin,
             KeyboardPlugin,
-            MousePlugin,
-            OrbitPlugin,
             PlanetPlugin,
             TextPlugin,
         ))
