@@ -1,8 +1,22 @@
 use crate::components::*;
-use bevy::window::PrimaryWindow;
+use crate::state::GameState;
 use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
 
-pub fn handle_cursor_moved(
+pub struct MousePlugin;
+
+impl Plugin for MousePlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            Update,
+            handle_cursor_moved.run_if(
+                in_state(GameState::FollowingCursor).or_else(in_state(GameState::EditPlanets)),
+            ),
+        );
+    }
+}
+
+fn handle_cursor_moved(
     windows: Query<&Window, With<PrimaryWindow>>,
     mut query: Query<&mut Transform, (With<Asteroid>, Without<Planet>)>,
 ) {

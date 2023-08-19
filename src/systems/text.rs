@@ -2,7 +2,15 @@ use crate::components::{Asteroid, CoordinatesText, Planet, StateText};
 use crate::state::GameState;
 use bevy::prelude::*;
 
-pub fn update_state_text(
+pub struct TextPlugin;
+
+impl Plugin for TextPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Update, (update_state_text, update_coordinates_text));
+    }
+}
+
+fn update_state_text(
     state: Res<State<GameState>>,
     mut query: Query<&mut Text, With<StateText>>,
 ) {
@@ -11,7 +19,7 @@ pub fn update_state_text(
     }
 }
 
-pub fn update_coordinates_text(
+fn update_coordinates_text(
     mut text_query: Query<&mut Text, With<CoordinatesText>>,
     asteroid_query: Query<&Transform, (With<Asteroid>, Without<Planet>)>,
 ) {

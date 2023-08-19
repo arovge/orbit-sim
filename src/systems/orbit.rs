@@ -8,7 +8,18 @@ const GRAVITATIONAL_CONSTANT: f32 = 6.674e-11;
 // Try refactoring match so this isn't needed
 const SLOW_RATIO: f32 = 1e-12;
 
-pub fn handle_asteroid_orbit(
+pub struct OrbitPlugin;
+
+impl Plugin for OrbitPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            Update,
+            handle_asteroid_orbit.run_if(in_state(GameState::InOrbit)),
+        );
+    }
+}
+
+fn handle_asteroid_orbit(
     mut next_state: ResMut<NextState<GameState>>,
     planets_query: Query<(&Transform, &Mass, &Radius), (With<Planet>, Without<Asteroid>)>,
     mut asteroids_query: Query<

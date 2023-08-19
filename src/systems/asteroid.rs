@@ -1,13 +1,28 @@
 use crate::state::GameState;
 use crate::{components::*, resources::MouseDragResource};
+use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
 // TODO: Using this makes me feel like something is wrong somewhere
 // Try refactoring match so this isn't needed
 const MOUSE_SCALE: f32 = 1e10;
 
-pub fn handle_asteroid_drag_start(
+pub struct AsteroidPlugin;
+
+impl Plugin for AsteroidPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            Update,
+            handle_asteroid_drag_start.run_if(in_state(GameState::FollowingCursor)),
+        )
+        .add_systems(
+            Update,
+            (handle_asteroid_drag_end,).run_if(in_state(GameState::CursorDragStarted)),
+        );
+    }
+}
+
+fn handle_asteroid_drag_start(
     mut next_state: ResMut<NextState<GameState>>,
     mut mouse_drag_resource: ResMut<MouseDragResource>,
     buttons: Res<Input<MouseButton>>,
@@ -20,7 +35,7 @@ pub fn handle_asteroid_drag_start(
     }
 }
 
-pub fn handle_asteroid_drag_end(
+fn handle_asteroid_drag_end(
     mut next_state: ResMut<NextState<GameState>>,
     mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
     game_resource: Res<MouseDragResource>,

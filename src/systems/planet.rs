@@ -1,8 +1,20 @@
 use crate::components::*;
+use crate::state::GameState;
 use bevy::window::PrimaryWindow;
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
-pub fn handle_edit_planets(
+pub struct PlanetPlugin;
+
+impl Plugin for PlanetPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            Update,
+            handle_edit_planets.run_if(in_state(GameState::EditPlanets)),
+        );
+    }
+}
+
+fn handle_edit_planets(
     windows: Query<&Window, With<PrimaryWindow>>,
     buttons: Res<Input<MouseButton>>,
     mut planets_query: Query<(Entity, &Transform, &Radius), (With<Planet>, Without<Asteroid>)>,

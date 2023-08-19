@@ -7,6 +7,10 @@ use crate::components::{StateText, *};
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 use resources::*;
 use state::*;
+use systems::{
+    asteroid::AsteroidPlugin, keyboard::KeyboardPlugin, mouse::MousePlugin, orbit::OrbitPlugin,
+    planet::PlanetPlugin, text::TextPlugin,
+};
 
 fn setup(
     mut commands: Commands,
@@ -87,45 +91,13 @@ fn main() {
         .add_state::<GameState>()
         .init_resource::<MouseDragResource>()
         .add_systems(Startup, setup)
-        .add_systems(
-            Update,
-            (
-                systems::keyboard::check_for_exit_key_press,
-                systems::keyboard::check_for_insert_mode_toggle,
-                systems::keyboard::check_for_reset_key_press,
-                systems::text::update_state_text,
-                systems::text::update_coordinates_text,
-            ),
-        )
-        .add_systems(
-            Update,
-            (
-                systems::mouse::handle_cursor_moved,
-                systems::asteroid::handle_asteroid_drag_start,
-            )
-                .run_if(in_state(GameState::FollowingCursor)),
-        )
-        .add_systems(
-            Update,
-            (
-                systems::asteroid::handle_asteroid_drag_end,
-            )
-                .run_if(in_state(GameState::CursorDragStarted)),
-        )
-        .add_systems(
-            Update,
-            (
-                systems::orbit::handle_asteroid_orbit,
-            )
-                .run_if(in_state(GameState::InOrbit)),
-        )
-        .add_systems(
-            Update,
-            (
-                systems::mouse::handle_cursor_moved,
-                systems::planet::handle_edit_planets,
-            )
-                .run_if(in_state(GameState::EditPlanets)),
-        )
+        .add_plugins((
+            AsteroidPlugin,
+            KeyboardPlugin,
+            MousePlugin,
+            OrbitPlugin,
+            PlanetPlugin,
+            TextPlugin,
+        ))
         .run();
 }
