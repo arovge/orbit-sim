@@ -101,21 +101,21 @@ fn main() {
             Update,
             (
                 systems::mouse::handle_cursor_moved,
-                systems::mouse::handle_asteroid_drag_start,
+                systems::asteroid::handle_asteroid_drag_start,
             )
                 .run_if(in_state(GameState::FollowingCursor)),
         )
         .add_systems(
             Update,
             (
-                systems::mouse::handle_asteroid_drag_end,
+                systems::asteroid::handle_asteroid_drag_end,
             )
                 .run_if(in_state(GameState::CursorDragStarted)),
         )
         .add_systems(
             Update,
             (
-                systems::orbit::handle_orbit,
+                systems::orbit::handle_asteroid_orbit,
             )
                 .run_if(in_state(GameState::InOrbit)),
         )
@@ -123,7 +123,7 @@ fn main() {
             Update,
             (
                 systems::mouse::handle_cursor_moved,
-                systems::mouse::handle_edit_planets,
+                systems::planet::handle_edit_planets,
             )
                 .run_if(in_state(GameState::EditPlanets)),
         )
