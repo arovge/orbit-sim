@@ -1,6 +1,7 @@
 use crate::state::GameState;
 use crate::{components::*, resources::MouseDragResource};
 use bevy::prelude::*;
+use bevy::sprite::MaterialMesh2dBundle;
 use bevy::window::PrimaryWindow;
 
 // TODO: Using this makes me feel like something is wrong somewhere
@@ -11,15 +12,34 @@ pub struct AsteroidPlugin;
 
 impl Plugin for AsteroidPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            Update,
-            handle_asteroid_drag_start.run_if(in_state(GameState::FollowingCursor)),
-        )
-        .add_systems(
-            Update,
-            (handle_asteroid_drag_end,).run_if(in_state(GameState::CursorDragStarted)),
-        );
+        app.add_systems(Startup, setup_asteroid)
+            .add_systems(
+                Update,
+                handle_asteroid_drag_start.run_if(in_state(GameState::FollowingCursor)),
+            )
+            .add_systems(
+                Update,
+                (handle_asteroid_drag_end,).run_if(in_state(GameState::CursorDragStarted)),
+            );
     }
+}
+
+fn setup_asteroid(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
+    commands.spawn((
+        MaterialMesh2dBundle {
+            mesh: meshes.add(shape::Circle::new(10.).into()).into(),
+            material: materials.add(ColorMaterial::from(Color::WHITE)),
+            transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
+            ..default()
+        },
+        Asteroid,
+        Radius::new(10.),
+        Velocity::default(),
+    ));
 }
 
 fn handle_asteroid_drag_start(

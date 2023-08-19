@@ -3,8 +3,7 @@ mod resources;
 mod state;
 mod systems;
 
-use crate::components::{StateText, *};
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
+use bevy::prelude::*;
 use resources::*;
 use state::*;
 use systems::{
@@ -12,76 +11,8 @@ use systems::{
     planet::PlanetPlugin, text::TextPlugin,
 };
 
-fn setup(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-    asset_server: Res<AssetServer>,
-) {
+fn setup(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
-
-    let font = asset_server.load("fonts/clacon2.ttf");
-    let text_style = TextStyle {
-        font,
-        font_size: 18.0,
-        color: Color::WHITE,
-    };
-
-    commands.spawn((
-        TextBundle::from_section(GameState::FollowingCursor.description(), text_style.clone())
-            .with_style(Style {
-                position_type: PositionType::Absolute,
-                bottom: Val::Px(15.),
-                left: Val::Px(15.),
-                ..default()
-            })
-            .with_text_alignment(TextAlignment::Left),
-        StateText,
-    ));
-    commands.spawn((
-        TextBundle::from_section("0, 0", text_style)
-            .with_style(Style {
-                position_type: PositionType::Absolute,
-                bottom: Val::Px(15.),
-                right: Val::Px(15.),
-                ..default()
-            })
-            .with_text_alignment(TextAlignment::Right),
-        CoordinatesText,
-    ));
-    commands.spawn((
-        MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Circle::new(50.).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::WHITE)),
-            transform: Transform::from_translation(Vec3::new(-350., 150., 0.)),
-            ..default()
-        },
-        Planet,
-        Mass::new(5.972e25),
-        Radius::new(50.),
-    ));
-    commands.spawn((
-        MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Circle::new(50.).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::WHITE)),
-            transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
-            ..default()
-        },
-        Planet,
-        Mass::new(5.972e25),
-        Radius::new(50.),
-    ));
-    commands.spawn((
-        MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Circle::new(10.).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::WHITE)),
-            transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
-            ..default()
-        },
-        Asteroid,
-        Radius::new(10.),
-        Velocity::default(),
-    ));
 }
 
 fn main() {

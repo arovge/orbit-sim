@@ -7,11 +7,40 @@ pub struct PlanetPlugin;
 
 impl Plugin for PlanetPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
+        app.add_systems(Startup, setup_planet).add_systems(
             Update,
             handle_edit_planets.run_if(in_state(GameState::EditPlanets)),
         );
     }
+}
+
+fn setup_planet(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
+    commands.spawn((
+        MaterialMesh2dBundle {
+            mesh: meshes.add(shape::Circle::new(50.).into()).into(),
+            material: materials.add(ColorMaterial::from(Color::WHITE)),
+            transform: Transform::from_translation(Vec3::new(-350., 150., 0.)),
+            ..default()
+        },
+        Planet,
+        Mass::new(5.972e25),
+        Radius::new(50.),
+    ));
+    commands.spawn((
+        MaterialMesh2dBundle {
+            mesh: meshes.add(shape::Circle::new(50.).into()).into(),
+            material: materials.add(ColorMaterial::from(Color::WHITE)),
+            transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
+            ..default()
+        },
+        Planet,
+        Mass::new(5.972e25),
+        Radius::new(50.),
+    ));
 }
 
 fn handle_edit_planets(
