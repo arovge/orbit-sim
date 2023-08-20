@@ -44,9 +44,8 @@ fn setup_text(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 fn update_state_text(state: Res<State<GameState>>, mut query: Query<&mut Text, With<StateText>>) {
-    for mut text in query.iter_mut() {
-        text.sections[0].value = state.get().description();
-    }
+    let mut text = query.single_mut();
+    text.sections[0].value = state.get().description();
 }
 
 fn update_coordinates_text(
@@ -54,10 +53,9 @@ fn update_coordinates_text(
     asteroid_query: Query<&Transform, (With<Asteroid>, Without<Planet>)>,
 ) {
     let asteroid_translation = asteroid_query.single().translation;
-    for mut text in text_query.iter_mut() {
-        text.sections[0].value = format!(
-            "{0:.2}, {1:.2}",
-            asteroid_translation.x, asteroid_translation.y
-        );
-    }
+    let mut text = text_query.single_mut();
+    text.sections[0].value = format!(
+        "{0:.2}, {1:.2}",
+        asteroid_translation.x, asteroid_translation.y
+    );
 }
