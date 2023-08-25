@@ -13,14 +13,14 @@ pub struct AsteroidPlugin;
 
 impl Plugin for AsteroidPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_asteroid).add_systems(
+        app.add_systems(Startup, setup).add_systems(
             Update,
             handle_asteroid_orbit.run_if(in_state(GameState::InOrbit)),
         );
     }
 }
 
-fn setup_asteroid(
+fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,

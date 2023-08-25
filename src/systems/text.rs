@@ -6,12 +6,12 @@ pub struct TextPlugin;
 
 impl Plugin for TextPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_text)
+        app.add_systems(Startup, setup)
             .add_systems(Update, (update_state_text, update_coordinates_text));
     }
 }
 
-fn setup_text(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/clacon2.ttf");
     let text_style = TextStyle {
         font,

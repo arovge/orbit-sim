@@ -7,14 +7,14 @@ pub struct PlanetPlugin;
 
 impl Plugin for PlanetPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_planet).add_systems(
+        app.add_systems(Startup, setup).add_systems(
             Update,
             handle_edit_planets.run_if(in_state(GameState::EditPlanets)),
         );
     }
 }
 
-fn setup_planet(
+fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
