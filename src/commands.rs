@@ -23,8 +23,11 @@ pub enum CelestialBodyKind {
 }
 
 impl CelestialBodyKind {
-    fn is_asteroid(&self) -> bool {
-        matches!(self, CelestialBodyKind::Asteroid)
+    fn radius(&self) -> f32 {
+        match self {
+            CelestialBodyKind::Asteroid => ASTEROID_RADIUS,
+            CelestialBodyKind::Planet(_) => PLANET_RADIUS,
+        }
     }
 }
 
@@ -46,11 +49,7 @@ impl Command for SpawnPlanetCommand {
 
 fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: CelestialBodyKind) {
     let mesh_handle = world.resource_scope(|_world, mut meshes: Mut<Assets<Mesh>>| {
-        let shape = if celestial_body_kind.is_asteroid() {
-            shape::Circle::new(ASTEROID_RADIUS)
-        } else {
-            shape::Circle::new(PLANET_RADIUS)
-        };
+        let shape = shape::Circle::new(celestial_body_kind.radius());
         meshes.add(Mesh::from(shape))
     });
 
@@ -66,11 +65,11 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: Celestia
                 MaterialMesh2dBundle {
                     mesh: mesh_handle.into(),
                     material: material_handle,
-                    transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
+                    transform: Transform::from_translation(Vec3::ZERO),
                     ..default()
                 },
                 Asteroid,
-                Radius::new(ASTEROID_RADIUS),
+                Radius::new(celestial_body_kind.radius()),
                 Velocity::default(),
             ));
         }
@@ -84,7 +83,7 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: Celestia
                 },
                 Planet,
                 Mass::new(PLANET_MASS),
-                Radius::new(PLANET_RADIUS),
+                Radius::new(celestial_body_kind.radius()),
             ));
         }
     }

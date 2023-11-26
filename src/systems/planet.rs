@@ -17,7 +17,7 @@ impl Plugin for PlanetPlugin {
 
 fn setup(mut commands: Commands) {
     commands.add(SpawnPlanetCommand(Vec3::new(-350., 150., 0.)));
-    commands.add(SpawnPlanetCommand(Vec3::new(0., 0., 0.)));
+    commands.add(SpawnPlanetCommand(Vec3::ZERO));
 }
 
 fn handle_edit_planets(
