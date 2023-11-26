@@ -1,7 +1,8 @@
+use crate::commands::SpawnPlanetCommand;
 use crate::components::*;
 use crate::state::GameState;
+use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
 pub struct PlanetPlugin;
 
@@ -14,33 +15,9 @@ impl Plugin for PlanetPlugin {
     }
 }
 
-fn setup(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-    commands.spawn((
-        MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Circle::new(50.).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::WHITE)),
-            transform: Transform::from_translation(Vec3::new(-350., 150., 0.)),
-            ..default()
-        },
-        Planet,
-        Mass::new(5.972e25),
-        Radius::new(50.),
-    ));
-    commands.spawn((
-        MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Circle::new(50.).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::WHITE)),
-            transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
-            ..default()
-        },
-        Planet,
-        Mass::new(5.972e25),
-        Radius::new(50.),
-    ));
+fn setup(mut commands: Commands) {
+    commands.add(SpawnPlanetCommand(Vec3::new(-350., 150., 0.)));
+    commands.add(SpawnPlanetCommand(Vec3::new(0., 0., 0.)));
 }
 
 fn handle_edit_planets(
@@ -48,8 +25,6 @@ fn handle_edit_planets(
     buttons: Res<Input<MouseButton>>,
     mut planets_query: Query<(Entity, &Transform, &Radius), (With<Planet>, Without<Asteroid>)>,
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
         let window = windows.get_single().unwrap();
@@ -63,17 +38,7 @@ fn handle_edit_planets(
             0.,
         );
 
-        commands.spawn((
-            MaterialMesh2dBundle {
-                mesh: meshes.add(shape::Circle::new(50.).into()).into(),
-                material: materials.add(ColorMaterial::from(Color::WHITE)),
-                transform: Transform::from_translation(position),
-                ..default()
-            },
-            Planet,
-            Mass::new(5.972e25),
-            Radius::new(50.),
-        ));
+        commands.add(SpawnPlanetCommand(position));
     }
     if buttons.just_pressed(MouseButton::Right) {
         let window = windows.get_single().unwrap();

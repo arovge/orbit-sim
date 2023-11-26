@@ -1,7 +1,7 @@
+use crate::commands::SpawnAsteroidCommand;
 use crate::components::*;
 use crate::state::GameState;
 use bevy::prelude::*;
-use bevy::sprite::MaterialMesh2dBundle;
 
 const GRAVITATIONAL_CONSTANT: f32 = 6.674e-11;
 
@@ -20,22 +20,8 @@ impl Plugin for AsteroidPlugin {
     }
 }
 
-fn setup(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-    commands.spawn((
-        MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Circle::new(10.).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::WHITE)),
-            transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
-            ..default()
-        },
-        Asteroid,
-        Radius::new(10.),
-        Velocity::default(),
-    ));
+fn setup(mut commands: Commands) {
+    commands.add(SpawnAsteroidCommand);
 }
 
 fn handle_asteroid_orbit(

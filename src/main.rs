@@ -1,3 +1,4 @@
+mod commands;
 mod components;
 mod resources;
 mod state;
