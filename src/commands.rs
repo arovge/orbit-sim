@@ -59,28 +59,30 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: Celestia
             materials.add(material)
         });
 
+    let position = match celestial_body_kind {
+        CelestialBodyKind::Asteroid => Vec3::ZERO,
+        CelestialBodyKind::Planet(position) => position,
+    };
+
+    let bundle = MaterialMesh2dBundle {
+        mesh: mesh_handle.into(),
+        material: material_handle,
+        transform: Transform::from_translation(position),
+        ..default()
+    };
+
     match celestial_body_kind {
         CelestialBodyKind::Asteroid => {
             world.spawn((
-                MaterialMesh2dBundle {
-                    mesh: mesh_handle.into(),
-                    material: material_handle,
-                    transform: Transform::from_translation(Vec3::ZERO),
-                    ..default()
-                },
+                bundle,
                 Asteroid,
                 Radius::new(celestial_body_kind.radius()),
                 Velocity::default(),
             ));
         }
-        CelestialBodyKind::Planet(position) => {
+        CelestialBodyKind::Planet(_) => {
             world.spawn((
-                MaterialMesh2dBundle {
-                    mesh: mesh_handle.into(),
-                    material: material_handle,
-                    transform: Transform::from_translation(position),
-                    ..default()
-                },
+                bundle,
                 Planet,
                 Mass::new(PLANET_MASS),
                 Radius::new(celestial_body_kind.radius()),
