@@ -16,4 +16,8 @@ impl CursorDragResource {
     pub fn set_start_drag_location(&mut self, location: Vec2) {
         self.start_drag_location = Some(location);
     }
+
+    pub fn reset(&mut self) {
+        self.start_drag_location = None;
+    }
 }

@@ -63,12 +63,16 @@ fn handle_cursor_drag_start(
 fn handle_cursor_drag_end(
     mut next_state: ResMut<NextState<GameState>>,
     mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
-    game_resource: Res<CursorDragResource>,
+    mut game_resource: ResMut<CursorDragResource>,
     buttons: Res<Input<MouseButton>>,
     windows: Query<&Window, With<PrimaryWindow>>,
 ) {
     if buttons.just_released(MouseButton::Left) {
-        let end_cursor_position = windows.get_single().unwrap().cursor_position().unwrap();
+        let Some(end_cursor_position) = windows.get_single().unwrap().cursor_position() else {
+            game_resource.reset();
+            next_state.set(GameState::FollowingCursor);
+            return;
+        };
         let start_cursor_position = game_resource.start_drag_location().unwrap();
         let x = end_cursor_position.x - start_cursor_position.x;
         let y = start_cursor_position.y - end_cursor_position.y;
