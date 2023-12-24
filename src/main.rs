@@ -9,7 +9,7 @@ use resources::*;
 use state::*;
 use systems::{
     asteroid::AsteroidPlugin, cursor::CursorPlugin, input::InputPlugin, planet::PlanetPlugin,
-    ui::UiPlugin,
+    ui::UiPlugin, physics::PhysicsPlugin,
 };
 
 fn setup(mut commands: Commands) {
@@ -27,6 +27,7 @@ fn main() {
             AsteroidPlugin,
             CursorPlugin,
             InputPlugin,
+            PhysicsPlugin,
             PlanetPlugin,
             UiPlugin,
         ))
