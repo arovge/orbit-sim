@@ -13,17 +13,7 @@ pub struct ModeText;
 pub struct Asteroid;
 
 #[derive(Component)]
-pub struct Radius(f32);
-
-impl Radius {
-    pub fn new(radius: f32) -> Self {
-        Self(radius)
-    }
-
-    pub fn radius(&self) -> f32 {
-        self.0
-    }
-}
+pub struct Radius(pub f32);
 
 #[derive(Component, Default)]
 pub struct Velocity(Vec3);

@@ -31,7 +31,7 @@ fn handle_edit_planets(
     mut commands: Commands,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
-        let window = windows.get_single().unwrap();
+        let window = windows.single();
         let half_width = window.width() / 2.;
         let half_height = window.height() / 2.;
         let cursor_position = window.cursor_position().unwrap();
@@ -45,7 +45,7 @@ fn handle_edit_planets(
         commands.add(SpawnPlanetCommand { position });
     }
     if buttons.just_pressed(MouseButton::Right) {
-        let window = windows.get_single().unwrap();
+        let window = windows.single();
         let half_width = window.width() / 2.;
         let half_height = window.height() / 2.;
         let cursor_position = window.cursor_position().unwrap();
@@ -57,7 +57,7 @@ fn handle_edit_planets(
 
         for (planet_entity, planet_transform, radius) in planets_query.iter_mut() {
             let distance = planet_transform.translation.distance(delete_position);
-            if distance < radius.radius() {
+            if distance < radius.0 {
                 commands.entity(planet_entity).despawn();
                 break;
             }

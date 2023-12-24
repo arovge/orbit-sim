@@ -83,7 +83,7 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: Celestia
             world.spawn((
                 bundle,
                 Asteroid,
-                Radius::new(celestial_body_kind.radius()),
+                Radius(celestial_body_kind.radius()),
                 Velocity::default(),
             ));
         }
@@ -92,7 +92,7 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: Celestia
                 bundle,
                 Planet,
                 Mass::new(PLANET_MASS),
-                Radius::new(celestial_body_kind.radius()),
+                Radius(celestial_body_kind.radius()),
             ));
         }
     }

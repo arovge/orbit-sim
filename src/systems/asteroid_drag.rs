@@ -1,5 +1,5 @@
 use crate::components::*;
-use crate::resources::CursorDragResource;
+use crate::resources::AsteroidDragResource;
 use crate::state::GameState;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
@@ -8,9 +8,9 @@ use bevy::window::PrimaryWindow;
 // Try refactoring match so this isn't needed
 const MOUSE_SCALE: f32 = 1e10;
 
-pub struct CursorPlugin;
+pub struct AsteroidDragPlugin;
 
-impl Plugin for CursorPlugin {
+impl Plugin for AsteroidDragPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
@@ -49,13 +49,13 @@ fn handle_cursor_moved(
 
 fn handle_cursor_drag_start(
     mut next_state: ResMut<NextState<GameState>>,
-    mut mouse_drag_resource: ResMut<CursorDragResource>,
+    mut asteroid_drag_resource: ResMut<AsteroidDragResource>,
     buttons: Res<Input<MouseButton>>,
     windows: Query<&Window, With<PrimaryWindow>>,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
-        let cursor_position = windows.get_single().unwrap().cursor_position().unwrap();
-        mouse_drag_resource.set_start_drag_location(cursor_position);
+        let cursor_position = windows.single().cursor_position().unwrap();
+        asteroid_drag_resource.drag_start_position = Some(cursor_position);
         next_state.set(GameState::CursorDragStarted);
     }
 }
@@ -63,17 +63,18 @@ fn handle_cursor_drag_start(
 fn handle_cursor_drag_end(
     mut next_state: ResMut<NextState<GameState>>,
     mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
-    mut game_resource: ResMut<CursorDragResource>,
+    mut asteroid_drag_resource: ResMut<AsteroidDragResource>,
     buttons: Res<Input<MouseButton>>,
     windows: Query<&Window, With<PrimaryWindow>>,
 ) {
     if buttons.just_released(MouseButton::Left) {
-        let Some(end_cursor_position) = windows.get_single().unwrap().cursor_position() else {
-            game_resource.reset();
+        // The mouse drag may end outside of the window
+        let Some(end_cursor_position) = windows.single().cursor_position() else {
+            asteroid_drag_resource.reset();
             next_state.set(GameState::FollowingCursor);
             return;
         };
-        let start_cursor_position = game_resource.start_drag_location().unwrap();
+        let start_cursor_position = asteroid_drag_resource.drag_start_position.unwrap();
         let x = end_cursor_position.x - start_cursor_position.x;
         let y = start_cursor_position.y - end_cursor_position.y;
 

@@ -1,5 +1,4 @@
-pub mod asteroid;
-pub mod cursor;
+pub mod asteroid_drag;
 pub mod input;
 pub mod physics;
 pub mod planet;
