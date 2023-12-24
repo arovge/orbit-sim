@@ -4,13 +4,16 @@ use crate::state::GameState;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
-pub struct PlanetPlugin;
+pub struct PlanetEditorPlugin;
 
-impl Plugin for PlanetPlugin {
+impl Plugin for PlanetEditorPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup).add_systems(
             Update,
-            handle_edit_planets.run_if(in_state(GameState::EditPlanets)),
+            (
+                check_for_insert_mode_toggle,
+                handle_edit_planets.run_if(in_state(GameState::EditPlanets)),
+            ),
         );
     }
 }
@@ -22,6 +25,19 @@ fn setup(mut commands: Commands) {
     commands.add(SpawnPlanetCommand {
         position: Vec3::ZERO,
     });
+}
+
+fn check_for_insert_mode_toggle(
+    keys: Res<Input<KeyCode>>,
+    state: Res<State<GameState>>,
+    mut next_state: ResMut<NextState<GameState>>,
+) {
+    if keys.just_pressed(KeyCode::I) {
+        match *state.get() {
+            GameState::EditPlanets => next_state.set(GameState::FollowingCursor),
+            _ => next_state.set(GameState::EditPlanets),
+        };
+    }
 }
 
 fn handle_edit_planets(

@@ -10,7 +10,7 @@ use resources::*;
 use state::*;
 use systems::{
     asteroid_drag::AsteroidDragPlugin, input::InputPlugin, physics::PhysicsPlugin,
-    planet::PlanetPlugin, ui::UiPlugin,
+    planet_editor::PlanetEditorPlugin, ui::UiPlugin,
 };
 
 fn setup(mut commands: Commands) {
@@ -29,7 +29,7 @@ fn main() {
             AsteroidDragPlugin,
             InputPlugin,
             PhysicsPlugin,
-            PlanetPlugin,
+            PlanetEditorPlugin,
             UiPlugin,
         ))
         .run();

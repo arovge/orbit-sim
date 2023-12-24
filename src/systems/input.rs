@@ -8,11 +8,7 @@ impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (
-                check_for_exit_key_press,
-                check_for_reset_key_press,
-                check_for_insert_mode_toggle,
-            ),
+            (check_for_exit_key_press, check_for_reset_key_press),
         );
     }
 }
@@ -35,18 +31,5 @@ fn check_for_reset_key_press(
         let mut asteroid_velocity = asteroid_query.single_mut();
         asteroid_velocity.reset();
         next_state.set(GameState::FollowingCursor);
-    }
-}
-
-fn check_for_insert_mode_toggle(
-    keys: Res<Input<KeyCode>>,
-    state: Res<State<GameState>>,
-    mut next_state: ResMut<NextState<GameState>>,
-) {
-    if keys.just_pressed(KeyCode::I) {
-        match *state.get() {
-            GameState::EditPlanets => next_state.set(GameState::FollowingCursor),
-            _ => next_state.set(GameState::EditPlanets),
-        };
     }
 }
