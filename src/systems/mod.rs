@@ -1,5 +1,6 @@
 pub mod asteroid;
 pub mod cursor;
-pub mod keyboard;
+pub mod input;
+pub mod physics;
 pub mod planet;
-pub mod text;
+pub mod ui;

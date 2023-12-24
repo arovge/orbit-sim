@@ -2,9 +2,9 @@ use crate::components::{Asteroid, CoordinatesText, Planet, StateText};
 use crate::state::GameState;
 use bevy::prelude::*;
 
-pub struct TextPlugin;
+pub struct UiPlugin;
 
-impl Plugin for TextPlugin {
+impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup)
             .add_systems(Update, (update_state_text, update_coordinates_text));

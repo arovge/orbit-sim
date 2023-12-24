@@ -8,8 +8,8 @@ use bevy::prelude::*;
 use resources::*;
 use state::*;
 use systems::{
-    asteroid::AsteroidPlugin, cursor::CursorPlugin, keyboard::KeyboardPlugin, planet::PlanetPlugin,
-    text::TextPlugin,
+    asteroid::AsteroidPlugin, cursor::CursorPlugin, input::InputPlugin, planet::PlanetPlugin,
+    ui::UiPlugin,
 };
 
 fn setup(mut commands: Commands) {
@@ -26,9 +26,9 @@ fn main() {
         .add_plugins((
             AsteroidPlugin,
             CursorPlugin,
-            KeyboardPlugin,
+            InputPlugin,
             PlanetPlugin,
-            TextPlugin,
+            UiPlugin,
         ))
         .run();
 }

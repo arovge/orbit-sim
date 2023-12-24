@@ -19,14 +19,14 @@ const PLANET_MASS: f32 = 5.972e25;
 
 pub enum CelestialBodyKind {
     Asteroid,
-    Planet(Vec3),
+    Planet { position: Vec3 },
 }
 
 impl CelestialBodyKind {
     fn radius(&self) -> f32 {
         match self {
             CelestialBodyKind::Asteroid => ASTEROID_RADIUS,
-            CelestialBodyKind::Planet(_) => PLANET_RADIUS,
+            CelestialBodyKind::Planet { .. } => PLANET_RADIUS,
         }
     }
 }
@@ -39,11 +39,18 @@ impl Command for SpawnAsteroidCommand {
     }
 }
 
-pub struct SpawnPlanetCommand(pub Vec3);
+pub struct SpawnPlanetCommand {
+    pub position: Vec3,
+}
 
 impl Command for SpawnPlanetCommand {
     fn apply(self, world: &mut bevy::prelude::World) {
-        apply_command(world, CelestialBodyKind::Planet(self.0));
+        apply_command(
+            world,
+            CelestialBodyKind::Planet {
+                position: self.position,
+            },
+        );
     }
 }
 
@@ -61,7 +68,7 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: Celestia
 
     let position = match celestial_body_kind {
         CelestialBodyKind::Asteroid => Vec3::ZERO,
-        CelestialBodyKind::Planet(position) => position,
+        CelestialBodyKind::Planet { position } => position,
     };
 
     let bundle = MaterialMesh2dBundle {
@@ -80,7 +87,7 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: Celestia
                 Velocity::default(),
             ));
         }
-        CelestialBodyKind::Planet(_) => {
+        CelestialBodyKind::Planet { .. } => {
             world.spawn((
                 bundle,
                 Planet,
