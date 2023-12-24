@@ -28,11 +28,11 @@ fn check_for_exit_key_press(
 
 fn check_for_reset_key_press(
     keys: Res<Input<KeyCode>>,
+    mut asteroid_query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
     mut next_state: ResMut<NextState<GameState>>,
-    mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
 ) {
     if keys.just_pressed(KeyCode::R) {
-        let mut asteroid_velocity = query.single_mut();
+        let mut asteroid_velocity = asteroid_query.single_mut();
         asteroid_velocity.reset();
         next_state.set(GameState::FollowingCursor);
     }

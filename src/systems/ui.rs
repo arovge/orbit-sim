@@ -11,7 +11,7 @@ impl Plugin for UiPlugin {
     }
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
     let font = asset_server.load("fonts/clacon2.ttf");
     let text_style = TextStyle {
         font,
@@ -43,14 +43,17 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 }
 
-fn update_state_text(state: Res<State<GameState>>, mut query: Query<&mut Text, With<StateText>>) {
-    let mut text = query.single_mut();
+fn update_state_text(
+    state: Res<State<GameState>>,
+    mut text_query: Query<&mut Text, With<StateText>>,
+) {
+    let mut text = text_query.single_mut();
     text.sections[0].value = state.get().description();
 }
 
 fn update_coordinates_text(
-    mut text_query: Query<&mut Text, With<CoordinatesText>>,
     asteroid_query: Query<&Transform, (With<Asteroid>, Without<Planet>)>,
+    mut text_query: Query<&mut Text, With<CoordinatesText>>,
 ) {
     let asteroid_translation = asteroid_query.single().translation;
     let mut text = text_query.single_mut();

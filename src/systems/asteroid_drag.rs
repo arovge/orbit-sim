@@ -30,56 +30,69 @@ impl Plugin for AsteroidDragPlugin {
 }
 
 fn handle_cursor_moved(
-    windows: Query<&Window, With<PrimaryWindow>>,
-    mut query: Query<&mut Transform, (With<Asteroid>, Without<Planet>)>,
+    camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    mut asteroid_query: Query<&mut Transform, (With<Asteroid>, Without<Planet>)>,
 ) {
-    let Ok(window) = windows.get_single() else {
+    let Some(cursor_position) = window_query.single().cursor_position() else {
         return;
     };
-    let half_width = window.width() / 2.;
-    let half_height = window.height() / 2.;
 
-    let mut asteroid_transform = query.single_mut();
-    let Some(cursor_position) = window.cursor_position() else {
-        return;
-    };
-    asteroid_transform.translation.x = cursor_position.x - half_width;
-    asteroid_transform.translation.y = half_height - cursor_position.y;
+    let (camera, camera_transform) = camera_query.single();
+    let position = camera
+        .viewport_to_world_2d(camera_transform, cursor_position)
+        .unwrap();
+
+    let mut asteroid_transform = asteroid_query.single_mut();
+    asteroid_transform.translation.x = position.x;
+    asteroid_transform.translation.y = position.y;
 }
 
 fn handle_cursor_drag_start(
-    mut next_state: ResMut<NextState<GameState>>,
-    mut asteroid_drag_resource: ResMut<AsteroidDragResource>,
+    camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
     buttons: Res<Input<MouseButton>>,
-    windows: Query<&Window, With<PrimaryWindow>>,
+    mut asteroid_drag_resource: ResMut<AsteroidDragResource>,
+    mut next_state: ResMut<NextState<GameState>>,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
-        let cursor_position = windows.single().cursor_position().unwrap();
-        asteroid_drag_resource.drag_start_position = Some(cursor_position);
+        let cursor_position = window_query.single().cursor_position().unwrap();
+
+        let (camera, camera_transform) = camera_query.single();
+        let start_position = camera
+            .viewport_to_world_2d(camera_transform, cursor_position)
+            .unwrap();
+
+        asteroid_drag_resource.drag_start_position = Some(start_position);
         next_state.set(GameState::CursorDragStarted);
     }
 }
 
 fn handle_cursor_drag_end(
-    mut next_state: ResMut<NextState<GameState>>,
-    mut query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
-    mut asteroid_drag_resource: ResMut<AsteroidDragResource>,
+    camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
     buttons: Res<Input<MouseButton>>,
-    windows: Query<&Window, With<PrimaryWindow>>,
+    mut asteroid_query: Query<&mut Velocity, (With<Asteroid>, Without<Planet>)>,
+    mut asteroid_drag_resource: ResMut<AsteroidDragResource>,
+    mut next_state: ResMut<NextState<GameState>>,
 ) {
     if buttons.just_released(MouseButton::Left) {
-        // The mouse drag may end outside of the window
-        let Some(end_cursor_position) = windows.single().cursor_position() else {
+        let Some(end_cursor_position) = window_query.single().cursor_position() else {
             asteroid_drag_resource.reset();
             next_state.set(GameState::FollowingCursor);
             return;
         };
-        let start_cursor_position = asteroid_drag_resource.drag_start_position.unwrap();
-        let x = end_cursor_position.x - start_cursor_position.x;
-        let y = start_cursor_position.y - end_cursor_position.y;
+        let (camera, camera_transform) = camera_query.single();
+        let end_position = camera
+            .viewport_to_world_2d(camera_transform, end_cursor_position)
+            .unwrap();
 
-        let mut asteroid_velocity = query.single_mut();
-        asteroid_velocity.set(x * MOUSE_SCALE, y * MOUSE_SCALE);
+        let start_position = asteroid_drag_resource.drag_start_position.unwrap();
+        let x = end_position.x - start_position.x;
+        let y = end_position.y - start_position.y;
+
+        let mut asteroid_velocity = asteroid_query.single_mut();
+        asteroid_velocity.0 = Vec2::new(x * MOUSE_SCALE, y * MOUSE_SCALE);
         next_state.set(GameState::InOrbit);
     }
 }

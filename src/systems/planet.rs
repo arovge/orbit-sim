@@ -25,38 +25,37 @@ fn setup(mut commands: Commands) {
 }
 
 fn handle_edit_planets(
-    windows: Query<&Window, With<PrimaryWindow>>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
     buttons: Res<Input<MouseButton>>,
     mut planets_query: Query<(Entity, &Transform, &Radius), (With<Planet>, Without<Asteroid>)>,
     mut commands: Commands,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
-        let window = windows.single();
-        let half_width = window.width() / 2.;
-        let half_height = window.height() / 2.;
+        let window = window_query.single();
         let cursor_position = window.cursor_position().unwrap();
 
-        let position = Vec3::new(
-            cursor_position.x - half_width,
-            half_height - cursor_position.y,
-            0.,
-        );
+        let (camera, camera_transform) = camera_query.single();
+        let position = camera
+            .viewport_to_world_2d(camera_transform, cursor_position)
+            .unwrap()
+            .extend(0.);
 
         commands.add(SpawnPlanetCommand { position });
     }
+
     if buttons.just_pressed(MouseButton::Right) {
-        let window = windows.single();
-        let half_width = window.width() / 2.;
-        let half_height = window.height() / 2.;
+        let window = window_query.single();
         let cursor_position = window.cursor_position().unwrap();
-        let delete_position = Vec3::new(
-            cursor_position.x - half_width,
-            half_height - cursor_position.y,
-            0.,
-        );
+
+        let (camera, camera_transform) = camera_query.single();
+        let position = camera
+            .viewport_to_world_2d(camera_transform, cursor_position)
+            .unwrap()
+            .extend(0.);
 
         for (planet_entity, planet_transform, radius) in planets_query.iter_mut() {
-            let distance = planet_transform.translation.distance(delete_position);
+            let distance = planet_transform.translation.distance(position);
             if distance < radius.0 {
                 commands.entity(planet_entity).despawn();
                 break;

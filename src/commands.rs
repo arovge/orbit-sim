@@ -91,7 +91,7 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: Celestia
             world.spawn((
                 bundle,
                 Planet,
-                Mass::new(PLANET_MASS),
+                Mass(PLANET_MASS),
                 Radius(celestial_body_kind.radius()),
             ));
         }

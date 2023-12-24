@@ -16,7 +16,7 @@ pub struct Asteroid;
 pub struct Radius(pub f32);
 
 #[derive(Component, Default)]
-pub struct Velocity(Vec3);
+pub struct Velocity(pub Vec2);
 
 impl Velocity {
     pub fn accelerate(&mut self, x_acceleration: f32, y_acceleration: f32) {
@@ -24,17 +24,8 @@ impl Velocity {
         self.0.y += y_acceleration;
     }
 
-    pub fn set(&mut self, x_velocity: f32, y_velocity: f32) {
-        self.0.x = x_velocity;
-        self.0.y = y_velocity;
-    }
-
-    pub fn velocity(&self) -> Vec3 {
-        self.0
-    }
-
     pub fn reset(&mut self) {
-        self.0 = Vec3::default();
+        self.0 = Vec2::ZERO;
     }
 }
 
@@ -42,14 +33,4 @@ impl Velocity {
 pub struct Planet;
 
 #[derive(Component)]
-pub struct Mass(f32);
-
-impl Mass {
-    pub fn new(mass: f32) -> Self {
-        Self(mass)
-    }
-
-    pub fn mass(&self) -> f32 {
-        self.0
-    }
-}
+pub struct Mass(pub f32);

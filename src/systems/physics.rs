@@ -31,7 +31,7 @@ fn process_physics(
         let distance = planet_transform
             .translation
             .distance(asteroid_transform.translation);
-        let gravity = GRAVITATIONAL_CONSTANT * (planet_mass.mass() / distance.powi(2));
+        let gravity = GRAVITATIONAL_CONSTANT * (planet_mass.0 / distance.powi(2));
 
         let dy = planet_transform.translation.y - asteroid_transform.translation.y;
         let dx = planet_transform.translation.x - asteroid_transform.translation.x;
@@ -41,8 +41,8 @@ fn process_physics(
         let y_acceleration = theta.sin() * gravity;
         asteroid_velocity.accelerate(x_acceleration, y_acceleration);
 
-        asteroid_transform.translation.x += asteroid_velocity.velocity().x * SLOW_RATIO;
-        asteroid_transform.translation.y += asteroid_velocity.velocity().y * SLOW_RATIO;
+        asteroid_transform.translation.x += asteroid_velocity.0.x * SLOW_RATIO;
+        asteroid_transform.translation.y += asteroid_velocity.0.y * SLOW_RATIO;
     }
 }
 
