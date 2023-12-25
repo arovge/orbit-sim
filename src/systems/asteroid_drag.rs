@@ -1,3 +1,4 @@
+use super::cursor_position_to_world_position;
 use crate::components::*;
 use crate::state::GameState;
 use bevy::input::common_conditions::{input_just_pressed, input_just_released};
@@ -11,6 +12,10 @@ const MOUSE_SCALE: f32 = 1e10;
 // TODO: Maybe this can be stored somewhere better. I originally wanted this to be part of
 // game state, but `derive(States) only supports fieldless enums`.
 // This doesn't really work with the type system and it should
+// Could do something with Local<T>. But then the start & end drag systems
+// would need to be combined into one. And there wouldn't be an easy way to update
+// The UI in the bottom right corner to say what's happening/get the asteroid
+// to stop following the planet when drag starts
 #[derive(Resource, Debug, Default)]
 struct AsteroidDragStartPosition(pub Option<Vec2>);
 
@@ -53,14 +58,9 @@ fn handle_cursor_moved(
     window_query: Query<&Window, With<PrimaryWindow>>,
     mut asteroid_query: Query<&mut Transform, (With<Asteroid>, Without<Planet>)>,
 ) {
-    let Some(cursor_position) = window_query.single().cursor_position() else {
+    let Some(position) = cursor_position_to_world_position(&window_query, &camera_query) else {
         return;
     };
-
-    let (camera, camera_transform) = camera_query.single();
-    let position = camera
-        .viewport_to_world_2d(camera_transform, cursor_position)
-        .unwrap();
 
     let mut asteroid_transform = asteroid_query.single_mut();
     asteroid_transform.translation.x = position.x;
@@ -73,12 +73,10 @@ fn handle_asteroid_drag_start(
     mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    let cursor_position = window_query.single().cursor_position().unwrap();
-
-    let (camera, camera_transform) = camera_query.single();
-    let start_position = camera
-        .viewport_to_world_2d(camera_transform, cursor_position)
-        .unwrap();
+    let Some(start_position) = cursor_position_to_world_position(&window_query, &camera_query)
+    else {
+        return;
+    };
 
     asteroid_drag_start_position.0 = Some(start_position);
     next_state.set(GameState::AsteroidDragStarted);
@@ -91,15 +89,11 @@ fn handle_asteroid_drag_end(
     mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    let Some(end_cursor_position) = window_query.single().cursor_position() else {
+    let Some(end_position) = cursor_position_to_world_position(&window_query, &camera_query) else {
         asteroid_drag_start_position.reset();
         next_state.set(GameState::FollowingCursor);
         return;
     };
-    let (camera, camera_transform) = camera_query.single();
-    let end_position = camera
-        .viewport_to_world_2d(camera_transform, end_cursor_position)
-        .unwrap();
 
     let start_position = asteroid_drag_start_position.0.unwrap();
     let x = end_position.x - start_position.x;

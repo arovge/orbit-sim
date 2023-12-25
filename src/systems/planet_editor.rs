@@ -1,3 +1,4 @@
+use super::cursor_position_to_world_position;
 use crate::commands::SpawnPlanetCommand;
 use crate::components::*;
 use crate::state::GameState;
@@ -50,12 +51,7 @@ fn handle_add_planet(
     camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
     mut commands: Commands,
 ) {
-    let window = window_query.single();
-    let cursor_position = window.cursor_position().unwrap();
-
-    let (camera, camera_transform) = camera_query.single();
-    let position = camera
-        .viewport_to_world_2d(camera_transform, cursor_position)
+    let position = cursor_position_to_world_position(&window_query, &camera_query)
         .unwrap()
         .extend(0.);
 
@@ -68,12 +64,7 @@ fn handle_remove_planet(
     mut planets_query: Query<(Entity, &Transform, &Radius), (With<Planet>, Without<Asteroid>)>,
     mut commands: Commands,
 ) {
-    let window = window_query.single();
-    let cursor_position = window.cursor_position().unwrap();
-
-    let (camera, camera_transform) = camera_query.single();
-    let position = camera
-        .viewport_to_world_2d(camera_transform, cursor_position)
+    let position = cursor_position_to_world_position(&window_query, &camera_query)
         .unwrap()
         .extend(0.);
 
