@@ -13,7 +13,7 @@ impl Plugin for PlanetEditorPlugin {
         app.add_systems(Startup, setup).add_systems(
             Update,
             (
-                handle_insert_mode_toggle.run_if(input_just_pressed(KeyCode::I)),
+                handle_insert_mode_toggle.run_if(input_just_pressed(KeyCode::KeyI)),
                 handle_add_planet.run_if(
                     in_state(GameState::EditPlanets)
                         .and_then(input_just_pressed(MouseButton::Left)),

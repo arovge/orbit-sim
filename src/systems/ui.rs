@@ -27,7 +27,7 @@ fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
                 left: Val::Px(15.),
                 ..default()
             })
-            .with_text_alignment(TextAlignment::Left),
+            .with_text_justify(JustifyText::Left),
         StateText,
     ));
     commands.spawn((
@@ -38,7 +38,7 @@ fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
                 right: Val::Px(15.),
                 ..default()
             })
-            .with_text_alignment(TextAlignment::Right),
+            .with_text_justify(JustifyText::Right),
         CoordinatesText,
     ));
 }

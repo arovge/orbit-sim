@@ -20,7 +20,7 @@ fn main() {
     App::new()
         .insert_resource(ClearColor(Color::BLACK))
         .add_plugins(DefaultPlugins)
-        .add_state::<GameState>()
+        .init_state::<GameState>()
         .add_systems(Startup, setup)
         .add_plugins((
             AsteroidDragPlugin,

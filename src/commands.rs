@@ -1,11 +1,11 @@
 use bevy::{
     asset::Assets,
     ecs::{system::Command, world::Mut},
-    math::Vec3,
+    math::{primitives::Circle, Vec3},
     prelude::default,
     render::{
         color::Color,
-        mesh::{shape, Mesh},
+        mesh::{Mesh, Meshable},
     },
     sprite::{ColorMaterial, MaterialMesh2dBundle},
     transform::components::Transform,
@@ -56,8 +56,8 @@ impl Command for SpawnPlanetCommand {
 
 fn apply_command(world: &mut bevy::prelude::World, celestial_body_kind: CelestialBodyKind) {
     let mesh_handle = world.resource_scope(|_world, mut meshes: Mut<Assets<Mesh>>| {
-        let shape = shape::Circle::new(celestial_body_kind.radius());
-        meshes.add(Mesh::from(shape))
+        let shape = Circle::new(celestial_body_kind.radius());
+        meshes.add(shape.mesh())
     });
 
     let material_handle =
