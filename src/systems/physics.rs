@@ -60,7 +60,10 @@ fn check_for_collisions(
         let asteroid_distance_to_planet = planet_transform
             .translation
             .distance(asteroid_transform.translation);
-        if asteroid_distance_to_planet < planet_radius.0 + asteroid_radius.0 {
+
+        let is_colliding = asteroid_distance_to_planet < planet_radius.0 + asteroid_radius.0;
+
+        if is_colliding {
             asteroid_velocity.reset();
             next_state.set(GameState::FollowingCursor);
         }

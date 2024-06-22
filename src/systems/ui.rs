@@ -20,7 +20,7 @@ fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
     };
 
     commands.spawn((
-        TextBundle::from_section(GameState::FollowingCursor.description(), text_style.clone())
+        TextBundle::from_section(GameState::FollowingCursor.to_string(), text_style.clone())
             .with_style(Style {
                 position_type: PositionType::Absolute,
                 bottom: Val::Px(15.),
@@ -48,7 +48,7 @@ fn update_state_text(
     mut text_query: Query<&mut Text, With<StateText>>,
 ) {
     let mut text = text_query.single_mut();
-    text.sections[0].value = state.get().description();
+    text.sections[0].value = state.get().to_string();
 }
 
 fn update_coordinates_text(

@@ -1,4 +1,5 @@
 use bevy::prelude::{Component, States};
+use std::fmt;
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash, Component, States, Default)]
 pub enum GameState {
@@ -9,13 +10,14 @@ pub enum GameState {
     EditPlanets,
 }
 
-impl GameState {
-    pub fn description(&self) -> String {
-        match self {
-            Self::FollowingCursor => "Following cursor".to_owned(),
-            Self::AsteroidDragStarted => "Dragging".to_owned(),
-            Self::InOrbit => "In orbit".to_owned(),
-            Self::EditPlanets => "Edit planets".to_owned(),
-        }
+impl fmt::Display for GameState {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let str = match self {
+            Self::FollowingCursor => "Following cursor",
+            Self::AsteroidDragStarted => "Dragging",
+            Self::InOrbit => "In orbit",
+            Self::EditPlanets => "Edit planets",
+        };
+        write!(f, "{str}")
     }
 }

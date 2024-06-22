@@ -45,7 +45,7 @@ impl Plugin for AsteroidDragPlugin {
             )
             .add_systems(
                 Update,
-                (handle_asteroid_drag_end,).run_if(
+                handle_asteroid_drag_end.run_if(
                     in_state(GameState::AsteroidDragStarted)
                         .and_then(input_just_released(MouseButton::Left)),
                 ),
