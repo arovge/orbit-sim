@@ -1,4 +1,4 @@
-use super::{cursor_position_to_world_position, AsteroidQueryFilter};
+use super::{cursor_position_to_world_position, WithAsteroid};
 use crate::components::*;
 use crate::state::GameState;
 use bevy::input::common_conditions::{input_just_pressed, input_just_released};
@@ -56,7 +56,7 @@ impl Plugin for AsteroidDragPlugin {
 fn handle_cursor_moved(
     camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
-    mut asteroid_query: Query<&mut Transform, AsteroidQueryFilter>,
+    mut asteroid_query: Query<&mut Transform, WithAsteroid>,
 ) {
     let Some(position) = cursor_position_to_world_position(&window_query, &camera_query) else {
         return;
@@ -85,7 +85,7 @@ fn handle_asteroid_drag_start(
 fn handle_asteroid_drag_end(
     camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
-    mut asteroid_query: Query<&mut Velocity, AsteroidQueryFilter>,
+    mut asteroid_query: Query<&mut Velocity, WithAsteroid>,
     mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {

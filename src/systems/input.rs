@@ -3,7 +3,7 @@ use crate::state::GameState;
 use bevy::input::common_conditions::input_just_pressed;
 use bevy::prelude::*;
 
-use super::AsteroidQueryFilter;
+use super::WithAsteroid;
 
 pub struct InputPlugin;
 
@@ -26,7 +26,7 @@ fn handle_exit_key_press(mut app_exit_events: ResMut<Events<bevy::app::AppExit>>
 }
 
 fn handle_reset_key_press(
-    mut asteroid_query: Query<&mut Velocity, AsteroidQueryFilter>,
+    mut asteroid_query: Query<&mut Velocity, WithAsteroid>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
     let mut asteroid_velocity = asteroid_query.single_mut();

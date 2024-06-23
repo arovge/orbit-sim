@@ -2,7 +2,7 @@ use crate::components::*;
 use crate::state::GameState;
 use bevy::prelude::*;
 
-use super::{AsteroidQueryFilter, PlanetQueryFilter};
+use super::{WithAsteroid, WithPlanet};
 
 const GRAVITATIONAL_CONSTANT: f32 = 6.674e-11;
 
@@ -24,8 +24,8 @@ impl Plugin for PhysicsPlugin {
 }
 
 fn process_physics(
-    planets_query: Query<(&Transform, &Mass), PlanetQueryFilter>,
-    mut asteroids_query: Query<(&mut Transform, &mut Velocity), AsteroidQueryFilter>,
+    planets_query: Query<(&Transform, &Mass), WithPlanet>,
+    mut asteroids_query: Query<(&mut Transform, &mut Velocity), WithAsteroid>,
 ) {
     let (mut asteroid_transform, mut asteroid_velocity) = asteroids_query.single_mut();
 
@@ -50,8 +50,8 @@ fn process_physics(
 
 fn check_for_collisions(
     mut next_state: ResMut<NextState<GameState>>,
-    planets_query: Query<(&Transform, &Radius), PlanetQueryFilter>,
-    mut asteroids_query: Query<(&Transform, &mut Velocity, &Radius), AsteroidQueryFilter>,
+    planets_query: Query<(&Transform, &Radius), WithPlanet>,
+    mut asteroids_query: Query<(&Transform, &mut Velocity, &Radius), WithAsteroid>,
 ) {
     let (asteroid_transform, mut asteroid_velocity, asteroid_radius) = asteroids_query.single_mut();
 

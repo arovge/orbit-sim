@@ -10,8 +10,8 @@ pub mod physics;
 pub mod planet_editor;
 pub mod ui;
 
-pub type PlanetQueryFilter = (With<Planet>, Without<Asteroid>);
-pub type AsteroidQueryFilter = (With<Asteroid>, Without<Planet>);
+pub type WithPlanet = (With<Planet>, Without<Asteroid>);
+pub type WithAsteroid = (With<Asteroid>, Without<Planet>);
 
 pub fn cursor_position_to_world_position(
     window_query: &Query<&Window, With<PrimaryWindow>>,

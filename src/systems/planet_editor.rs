@@ -1,4 +1,4 @@
-use super::{cursor_position_to_world_position, PlanetQueryFilter};
+use super::{cursor_position_to_world_position, WithPlanet};
 use crate::commands::SpawnPlanetCommand;
 use crate::components::*;
 use crate::state::GameState;
@@ -61,7 +61,7 @@ fn handle_add_planet(
 fn handle_remove_planet(
     window_query: Query<&Window, With<PrimaryWindow>>,
     camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
-    mut planets_query: Query<(Entity, &Transform, &Radius), PlanetQueryFilter>,
+    mut planets_query: Query<(Entity, &Transform, &Radius), WithPlanet>,
     mut commands: Commands,
 ) {
     let position = cursor_position_to_world_position(&window_query, &camera_query)
