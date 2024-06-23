@@ -61,7 +61,7 @@ fn handle_add_planet(
 fn handle_remove_planet(
     window_query: Query<&Window, With<PrimaryWindow>>,
     camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
-    mut planets_query: Query<(Entity, &Transform, &Radius), (With<Planet>, Without<Asteroid>)>,
+    mut planets_query: Query<(Entity, &Transform, &Radius), With<Planet>>,
     mut commands: Commands,
 ) {
     let position = cursor_position_to_world_position(&window_query, &camera_query)

@@ -22,8 +22,8 @@ impl Plugin for PhysicsPlugin {
 }
 
 fn process_physics(
-    planets_query: Query<(&Transform, &Mass), (With<Planet>, Without<Asteroid>)>,
-    mut asteroids_query: Query<(&mut Transform, &mut Velocity), (With<Asteroid>, Without<Planet>)>,
+    planets_query: Query<(&Transform, &Mass), With<Planet>>,
+    mut asteroids_query: Query<(&mut Transform, &mut Velocity), With<Asteroid>>,
 ) {
     let (mut asteroid_transform, mut asteroid_velocity) = asteroids_query.single_mut();
 
@@ -48,11 +48,8 @@ fn process_physics(
 
 fn check_for_collisions(
     mut next_state: ResMut<NextState<GameState>>,
-    planets_query: Query<(&Transform, &Radius), (With<Planet>, Without<Asteroid>)>,
-    mut asteroids_query: Query<
-        (&Transform, &mut Velocity, &Radius),
-        (With<Asteroid>, Without<Planet>),
-    >,
+    planets_query: Query<(&Transform, &Radius), With<Planet>>,
+    mut asteroids_query: Query<(&Transform, &mut Velocity, &Radius), With<Asteroid>>,
 ) {
     let (asteroid_transform, mut asteroid_velocity, asteroid_radius) = asteroids_query.single_mut();
 
