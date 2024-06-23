@@ -1,6 +1,8 @@
-use crate::components::{Asteroid, CoordinatesText, Planet, StateText};
+use crate::components::{CoordinatesText, StateText};
 use crate::state::GameState;
 use bevy::prelude::*;
+
+use super::AsteroidQueryFilter;
 
 pub struct UiPlugin;
 
@@ -52,7 +54,7 @@ fn update_state_text(
 }
 
 fn update_coordinates_text(
-    asteroid_query: Query<&Transform, (With<Asteroid>, Without<Planet>)>,
+    asteroid_query: Query<&Transform, AsteroidQueryFilter>,
     mut text_query: Query<&mut Text, With<CoordinatesText>>,
 ) {
     let asteroid_translation = asteroid_query.single().translation;
