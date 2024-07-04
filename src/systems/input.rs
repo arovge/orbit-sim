@@ -21,8 +21,8 @@ impl Plugin for InputPlugin {
     }
 }
 
-fn handle_exit_key_press(mut app_exit_events: ResMut<Events<bevy::app::AppExit>>) {
-    app_exit_events.send(bevy::app::AppExit);
+fn handle_exit_key_press(mut writer: EventWriter<AppExit>) {
+    writer.send(AppExit::Success);
 }
 
 fn handle_reset_key_press(

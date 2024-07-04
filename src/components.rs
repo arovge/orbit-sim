@@ -7,9 +7,6 @@ pub struct StateText;
 pub struct CoordinatesText;
 
 #[derive(Component)]
-pub struct ModeText;
-
-#[derive(Component)]
 pub struct Asteroid;
 
 #[derive(Component)]

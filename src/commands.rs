@@ -1,12 +1,10 @@
 use bevy::{
     asset::Assets,
-    ecs::{system::Command, world::Mut},
+    color::Color,
+    ecs::world::{Command, Mut},
     math::{primitives::Circle, Vec3},
     prelude::default,
-    render::{
-        color::Color,
-        mesh::{Mesh, Meshable},
-    },
+    render::mesh::{Mesh, Meshable},
     sprite::{ColorMaterial, MaterialMesh2dBundle},
     transform::components::Transform,
 };
