@@ -1,4 +1,4 @@
-use super::{cursor_position_to_world_position, WithAsteroid};
+use super::{world_position_2d, WithAsteroid};
 use crate::components::*;
 use crate::state::GameState;
 use bevy::input::common_conditions::{input_just_pressed, input_just_released};
@@ -58,7 +58,7 @@ fn handle_cursor_moved(
     window_query: Query<&Window, With<PrimaryWindow>>,
     mut asteroid_query: Query<&mut Transform, WithAsteroid>,
 ) {
-    let Some(position) = cursor_position_to_world_position(&window_query, &camera_query) else {
+    let Some(position) = world_position_2d(&window_query, &camera_query) else {
         return;
     };
 
@@ -73,7 +73,7 @@ fn handle_asteroid_drag_start(
     mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    let Some(start_position) = cursor_position_to_world_position(&window_query, &camera_query)
+    let Some(start_position) = world_position_2d(&window_query, &camera_query)
     else {
         return;
     };
@@ -89,7 +89,7 @@ fn handle_asteroid_drag_end(
     mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    let Some(end_position) = cursor_position_to_world_position(&window_query, &camera_query) else {
+    let Some(end_position) = world_position_2d(&window_query, &camera_query) else {
         asteroid_drag_start_position.reset();
         next_state.set(GameState::FollowingCursor);
         return;

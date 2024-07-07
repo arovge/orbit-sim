@@ -16,7 +16,10 @@ pub type WithPlanet = (With<Planet>, Without<Asteroid>);
 /// A [`bevy::ecs::query::QueryFilter`] to ensure a query's access to [`Asteroid`] is disjoint from access to [`Planet`].
 pub type WithAsteroid = (With<Asteroid>, Without<Planet>);
 
-pub fn cursor_position_to_world_position(
+/// Translates the cursor position on the window into its position in the world.
+/// 
+/// Returns [`None`] if the cursor position is not on the primary window.
+pub fn world_position_2d(
     window_query: &Query<&Window, With<PrimaryWindow>>,
     camera_query: &Query<(&Camera, &GlobalTransform), With<Camera2d>>,
 ) -> Option<Vec2> {
