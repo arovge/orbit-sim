@@ -19,15 +19,15 @@ fn setup(mut commands: Commands) {
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::BLACK))
-        .add_plugins(DefaultPlugins)
-        .init_state::<GameState>()
-        .add_systems(Startup, setup)
         .add_plugins((
             AsteroidDragPlugin,
+            DefaultPlugins,
             InputPlugin,
             PhysicsPlugin,
             PlanetEditorPlugin,
             UiPlugin,
         ))
+        .init_state::<GameState>()
+        .add_systems(Startup, setup)
         .run();
 }

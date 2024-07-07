@@ -10,7 +10,10 @@ pub mod physics;
 pub mod planet_editor;
 pub mod ui;
 
+/// A [`bevy::ecs::query::QueryFilter`] to ensure a query's access to [`Planet`] is disjoint from access to [`Asteroid`].
 pub type WithPlanet = (With<Planet>, Without<Asteroid>);
+
+/// A [`bevy::ecs::query::QueryFilter`] to ensure a query's access to [`Asteroid`] is disjoint from access to [`Planet`].
 pub type WithAsteroid = (With<Asteroid>, Without<Planet>);
 
 pub fn cursor_position_to_world_position(
