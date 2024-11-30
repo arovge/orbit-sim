@@ -77,12 +77,10 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body: CelestialBody
 
     match celestial_body {
         CelestialBody::Asteroid => {
-            world
-                .commands()
-                .spawn((props, Asteroid, Radius(celestial_body.radius())));
+            world.spawn((props, Asteroid, Radius(celestial_body.radius())));
         }
         CelestialBody::Planet { .. } => {
-            world.commands().spawn((
+            world.spawn((
                 props,
                 Planet,
                 Mass(PLANET_MASS),
