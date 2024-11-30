@@ -15,12 +15,10 @@ impl Plugin for PlanetEditorPlugin {
             (
                 handle_insert_mode_toggle.run_if(input_just_pressed(KeyCode::KeyI)),
                 handle_add_planet.run_if(
-                    in_state(GameState::EditPlanets)
-                        .and_then(input_just_pressed(MouseButton::Left)),
+                    in_state(GameState::EditPlanets).and(input_just_pressed(MouseButton::Left)),
                 ),
                 handle_remove_planet.run_if(
-                    in_state(GameState::EditPlanets)
-                        .and_then(input_just_pressed(MouseButton::Right)),
+                    in_state(GameState::EditPlanets).and(input_just_pressed(MouseButton::Right)),
                 ),
             ),
         );
@@ -28,10 +26,10 @@ impl Plugin for PlanetEditorPlugin {
 }
 
 fn setup(mut commands: Commands) {
-    commands.add(SpawnPlanetCommand {
+    commands.queue(SpawnPlanetCommand {
         position: Vec3::new(-350., 150., 0.),
     });
-    commands.add(SpawnPlanetCommand {
+    commands.queue(SpawnPlanetCommand {
         position: Vec3::ZERO,
     });
 }
@@ -55,7 +53,7 @@ fn handle_add_planet(
         .unwrap()
         .extend(0.);
 
-    commands.add(SpawnPlanetCommand { position });
+    commands.queue(SpawnPlanetCommand { position });
 }
 
 fn handle_remove_planet(

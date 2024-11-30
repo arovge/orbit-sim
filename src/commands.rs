@@ -3,13 +3,13 @@ use bevy::{
     color::Color,
     ecs::world::{Command, Mut},
     math::{primitives::Circle, Vec3},
-    prelude::default,
+    prelude::Mesh2d,
     render::mesh::{Mesh, Meshable},
-    sprite::{ColorMaterial, MaterialMesh2dBundle},
+    sprite::{ColorMaterial, MeshMaterial2d},
     transform::components::Transform,
 };
 
-use crate::components::{Asteroid, Mass, Planet, Radius, Velocity};
+use crate::components::{Asteroid, Mass, Planet, Radius};
 
 const ASTEROID_RADIUS: f32 = 10.;
 const PLANET_RADIUS: f32 = 50.;
@@ -69,25 +69,21 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body: CelestialBody
         CelestialBody::Planet { position } => position,
     };
 
-    let bundle = MaterialMesh2dBundle {
-        mesh: mesh_handle.into(),
-        material: material_handle,
-        transform: Transform::from_translation(position),
-        ..default()
-    };
+    let props = (
+        Mesh2d(mesh_handle),
+        MeshMaterial2d(material_handle),
+        Transform::from_translation(position),
+    );
 
     match celestial_body {
         CelestialBody::Asteroid => {
-            world.spawn((
-                bundle,
-                Asteroid,
-                Radius(celestial_body.radius()),
-                Velocity::default(),
-            ));
+            world
+                .commands()
+                .spawn((props, Asteroid, Radius(celestial_body.radius())));
         }
         CelestialBody::Planet { .. } => {
-            world.spawn((
-                bundle,
+            world.commands().spawn((
+                props,
                 Planet,
                 Mass(PLANET_MASS),
                 Radius(celestial_body.radius()),

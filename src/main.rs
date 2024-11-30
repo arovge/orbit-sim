@@ -12,8 +12,8 @@ use systems::{
 };
 
 fn setup(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
-    commands.add(SpawnAsteroidCommand);
+    commands.spawn(Camera2d);
+    commands.queue(SpawnAsteroidCommand);
 }
 
 fn main() {

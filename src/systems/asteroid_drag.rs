@@ -33,21 +33,20 @@ impl Plugin for AsteroidDragPlugin {
             .add_systems(
                 Update,
                 handle_cursor_moved.run_if(
-                    in_state(GameState::FollowingCursor).or_else(in_state(GameState::EditPlanets)),
+                    in_state(GameState::FollowingCursor).or(in_state(GameState::EditPlanets)),
                 ),
             )
             .add_systems(
                 Update,
                 handle_asteroid_drag_start.run_if(
-                    in_state(GameState::FollowingCursor)
-                        .and_then(input_just_pressed(MouseButton::Left)),
+                    in_state(GameState::FollowingCursor).and(input_just_pressed(MouseButton::Left)),
                 ),
             )
             .add_systems(
                 Update,
                 handle_asteroid_drag_end.run_if(
                     in_state(GameState::AsteroidDragStarted)
-                        .and_then(input_just_released(MouseButton::Left)),
+                        .and(input_just_released(MouseButton::Left)),
                 ),
             );
     }
@@ -73,8 +72,7 @@ fn handle_asteroid_drag_start(
     mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    let Some(start_position) = world_position_2d(&window_query, &camera_query)
-    else {
+    let Some(start_position) = world_position_2d(&window_query, &camera_query) else {
         return;
     };
 

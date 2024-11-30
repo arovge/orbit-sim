@@ -13,7 +13,7 @@ impl Plugin for InputPlugin {
             Update,
             (
                 handle_exit_key_press.run_if(
-                    input_just_pressed(KeyCode::KeyQ).or_else(input_just_pressed(KeyCode::Escape)),
+                    input_just_pressed(KeyCode::KeyQ).or(input_just_pressed(KeyCode::Escape)),
                 ),
                 handle_reset_key_press.run_if(input_just_pressed(KeyCode::KeyR)),
             ),

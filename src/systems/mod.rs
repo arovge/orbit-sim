@@ -17,7 +17,7 @@ pub type WithPlanet = (With<Planet>, Without<Asteroid>);
 pub type WithAsteroid = (With<Asteroid>, Without<Planet>);
 
 /// Translates the cursor position on the window into its position in the world.
-/// 
+///
 /// Returns [`None`] if the cursor position is not on the primary window.
 pub fn world_position_2d(
     window_query: &Query<&Window, With<PrimaryWindow>>,
@@ -25,5 +25,7 @@ pub fn world_position_2d(
 ) -> Option<Vec2> {
     let cursor_position = window_query.get_single().ok()?.cursor_position()?;
     let (camera, camera_transform) = camera_query.get_single().ok()?;
-    camera.viewport_to_world_2d(camera_transform, cursor_position)
+    camera
+        .viewport_to_world_2d(camera_transform, cursor_position)
+        .ok()
 }
