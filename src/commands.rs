@@ -73,19 +73,15 @@ fn apply_command(world: &mut bevy::prelude::World, celestial_body: CelestialBody
         Mesh2d(mesh_handle),
         MeshMaterial2d(material_handle),
         Transform::from_translation(position),
+        Radius(celestial_body.radius()),
     );
 
     match celestial_body {
         CelestialBody::Asteroid => {
-            world.spawn((props, Asteroid, Radius(celestial_body.radius())));
+            world.spawn((props, Asteroid));
         }
         CelestialBody::Planet { .. } => {
-            world.spawn((
-                props,
-                Planet,
-                Mass(PLANET_MASS),
-                Radius(celestial_body.radius()),
-            ));
+            world.spawn((props, Planet, Mass(PLANET_MASS)));
         }
     }
 }
