@@ -1,4 +1,4 @@
-use super::{world_position_2d, WithAsteroid};
+use super::{WithAsteroid, world_position_2d};
 use crate::components::*;
 use crate::state::GameState;
 use bevy::input::common_conditions::{input_just_pressed, input_just_released};
@@ -55,15 +55,14 @@ impl Plugin for AsteroidDragPlugin {
 fn handle_cursor_moved(
     camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
-    mut asteroid_query: Query<&mut Transform, WithAsteroid>,
+    mut asteroid_query: Single<&mut Transform, WithAsteroid>,
 ) {
     let Some(position) = world_position_2d(&window_query, &camera_query) else {
         return;
     };
 
-    let mut asteroid_transform = asteroid_query.single_mut();
-    asteroid_transform.translation.x = position.x;
-    asteroid_transform.translation.y = position.y;
+    asteroid_query.translation.x = position.x;
+    asteroid_query.translation.y = position.y;
 }
 
 fn handle_asteroid_drag_start(
@@ -83,7 +82,7 @@ fn handle_asteroid_drag_start(
 fn handle_asteroid_drag_end(
     camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
-    mut asteroid_query: Query<&mut Velocity, WithAsteroid>,
+    mut asteroid_query: Single<&mut Velocity, WithAsteroid>,
     mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
@@ -97,7 +96,6 @@ fn handle_asteroid_drag_end(
     let x = end_position.x - start_position.x;
     let y = end_position.y - start_position.y;
 
-    let mut asteroid_velocity = asteroid_query.single_mut();
-    asteroid_velocity.0 = Vec2::new(x * MOUSE_SCALE, y * MOUSE_SCALE);
+    asteroid_query.0 = Vec2::new(x * MOUSE_SCALE, y * MOUSE_SCALE);
     next_state.set(GameState::InOrbit);
 }

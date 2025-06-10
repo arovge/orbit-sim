@@ -1,4 +1,4 @@
-use super::{world_position_2d, WithPlanet};
+use super::{WithPlanet, world_position_2d};
 use crate::commands::SpawnPlanetCommand;
 use crate::components::*;
 use crate::state::GameState;

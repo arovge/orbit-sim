@@ -1,8 +1,8 @@
 use bevy::{
     asset::Assets,
     color::Color,
-    ecs::world::{Command, Mut},
-    math::{primitives::Circle, Vec3},
+    ecs::{system::Command, world::Mut},
+    math::{Vec3, primitives::Circle},
     prelude::Mesh2d,
     render::mesh::{Mesh, Meshable},
     sprite::{ColorMaterial, MeshMaterial2d},

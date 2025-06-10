@@ -23,8 +23,8 @@ pub fn world_position_2d(
     window_query: &Query<&Window, With<PrimaryWindow>>,
     camera_query: &Query<(&Camera, &GlobalTransform), With<Camera2d>>,
 ) -> Option<Vec2> {
-    let cursor_position = window_query.get_single().ok()?.cursor_position()?;
-    let (camera, camera_transform) = camera_query.get_single().ok()?;
+    let cursor_position = window_query.single().ok()?.cursor_position()?;
+    let (camera, camera_transform) = camera_query.single().ok()?;
     camera
         .viewport_to_world_2d(camera_transform, cursor_position)
         .ok()

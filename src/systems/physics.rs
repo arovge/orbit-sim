@@ -25,9 +25,9 @@ impl Plugin for PhysicsPlugin {
 
 fn process_physics(
     planets_query: Query<(&Transform, &Mass), WithPlanet>,
-    mut asteroids_query: Query<(&mut Transform, &mut Velocity), WithAsteroid>,
+    asteroids_query: Single<(&mut Transform, &mut Velocity), WithAsteroid>,
 ) {
-    let (mut asteroid_transform, mut asteroid_velocity) = asteroids_query.single_mut();
+    let (mut asteroid_transform, mut asteroid_velocity) = asteroids_query.into_inner();
 
     for (planet_transform, planet_mass) in planets_query.iter() {
         let distance = planet_transform
@@ -51,9 +51,9 @@ fn process_physics(
 fn check_for_collisions(
     mut next_state: ResMut<NextState<GameState>>,
     planets_query: Query<(&Transform, &Radius), WithPlanet>,
-    mut asteroids_query: Query<(&Transform, &mut Velocity, &Radius), WithAsteroid>,
+    asteroids_query: Single<(&Transform, &mut Velocity, &Radius), WithAsteroid>,
 ) {
-    let (asteroid_transform, mut asteroid_velocity, asteroid_radius) = asteroids_query.single_mut();
+    let (asteroid_transform, mut asteroid_velocity, asteroid_radius) = asteroids_query.into_inner();
 
     for (planet_transform, planet_radius) in planets_query.iter() {
         let asteroid_distance_to_planet = planet_transform

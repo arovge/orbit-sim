@@ -22,14 +22,13 @@ impl Plugin for InputPlugin {
 }
 
 fn handle_exit_key_press(mut writer: EventWriter<AppExit>) {
-    writer.send(AppExit::Success);
+    writer.write(AppExit::Success);
 }
 
 fn handle_reset_key_press(
-    mut asteroid_query: Query<&mut Velocity, WithAsteroid>,
+    mut asteroid_query: Single<&mut Velocity, WithAsteroid>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    let mut asteroid_velocity = asteroid_query.single_mut();
-    asteroid_velocity.reset();
+    asteroid_query.reset();
     next_state.set(GameState::FollowingCursor);
 }
