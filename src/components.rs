@@ -1,12 +1,6 @@
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct StateText;
-
-#[derive(Component)]
-pub struct CoordinatesText;
-
-#[derive(Component)]
 #[require(Velocity)]
 pub struct Asteroid;
 

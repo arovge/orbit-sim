@@ -1,4 +1,3 @@
-use crate::components::{CoordinatesText, StateText};
 use crate::state::GameState;
 use bevy::prelude::*;
 
@@ -12,6 +11,12 @@ impl Plugin for UiPlugin {
             .add_systems(Update, (update_state_text, update_coordinates_text));
     }
 }
+
+#[derive(Component)]
+pub struct StateText;
+
+#[derive(Component)]
+pub struct CoordinatesText;
 
 fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
     let font = asset_server.load("fonts/clacon2.ttf");
