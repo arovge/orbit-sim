@@ -32,7 +32,7 @@ fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
         text_font.clone(),
         text_color,
         TextLayout {
-            justify: JustifyText::Left,
+            justify: Justify::Left,
             ..default()
         },
         Node {
@@ -48,7 +48,7 @@ fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
         text_font,
         text_color,
         TextLayout {
-            justify: JustifyText::Right,
+            justify: Justify::Right,
             ..default()
         },
         Node {

@@ -3,9 +3,8 @@ use bevy::{
     color::Color,
     ecs::{system::Command, world::Mut},
     math::{Vec3, primitives::Circle},
-    prelude::Mesh2d,
-    render::mesh::{Mesh, Meshable},
-    sprite::{ColorMaterial, MeshMaterial2d},
+    mesh::{Mesh, Meshable},
+    prelude::{ColorMaterial, Mesh2d, MeshMaterial2d},
     transform::components::Transform,
 };
 

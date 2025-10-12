@@ -21,7 +21,7 @@ impl Plugin for InputPlugin {
     }
 }
 
-fn handle_exit_key_press(mut writer: EventWriter<AppExit>) {
+fn handle_exit_key_press(mut writer: MessageWriter<AppExit>) {
     writer.write(AppExit::Success);
 }
 
