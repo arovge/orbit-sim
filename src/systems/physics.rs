@@ -7,7 +7,7 @@ use super::{WithAsteroid, WithPlanet};
 const GRAVITATIONAL_CONSTANT: f32 = 6.674e-11;
 
 // TODO: Using this makes me feel like something is wrong somewhere
-// Try refactoring match so this isn't needed
+// Try refactoring math so this isn't needed
 const SLOW_RATIO: f32 = 1e-12;
 
 pub struct PhysicsPlugin;
