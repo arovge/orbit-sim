@@ -3,18 +3,14 @@ mod components;
 mod plugins;
 mod state;
 
+use bevy::input::common_conditions::input_just_pressed;
 use bevy::prelude::*;
 use commands::SpawnAsteroidCommand;
 use plugins::{
-    asteroid_drag::AsteroidDragPlugin, input::InputPlugin, physics::PhysicsPlugin,
+    asteroid_drag::AsteroidDragPlugin, input::InputPlugin, orbit::PhysicsPlugin,
     planet_editor::PlanetEditorPlugin, ui::UiPlugin,
 };
 use state::*;
-
-fn setup(mut commands: Commands) {
-    commands.spawn(Camera2d);
-    commands.queue(SpawnAsteroidCommand);
-}
 
 fn main() {
     App::new()
@@ -29,5 +25,18 @@ fn main() {
         ))
         .init_state::<GameState>()
         .add_systems(Startup, setup)
+        .add_systems(
+            Update,
+            quit.run_if(input_just_pressed(KeyCode::KeyQ).or(input_just_pressed(KeyCode::Escape))),
+        )
         .run();
+}
+
+fn setup(mut commands: Commands) {
+    commands.spawn(Camera2d);
+    commands.queue(SpawnAsteroidCommand);
+}
+
+fn quit(mut writer: MessageWriter<AppExit>) {
+    writer.write(AppExit::Success);
 }

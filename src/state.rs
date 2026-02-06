@@ -6,7 +6,7 @@ pub enum GameState {
     #[default]
     FollowingCursor,
     AsteroidDragStarted,
-    InOrbit,
+    Orbit,
     EditPlanets,
 }
 
@@ -15,7 +15,7 @@ impl fmt::Display for GameState {
         let str = match self {
             Self::FollowingCursor => "Following cursor",
             Self::AsteroidDragStarted => "Dragging",
-            Self::InOrbit => "In orbit",
+            Self::Orbit => "In orbit",
             Self::EditPlanets => "Edit planets",
         };
         write!(f, "{str}")

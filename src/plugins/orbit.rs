@@ -18,7 +18,7 @@ impl Plugin for PhysicsPlugin {
             Update,
             (tick_physics, check_for_collisions)
                 .chain()
-                .run_if(in_state(GameState::InOrbit)),
+                .run_if(in_state(GameState::Orbit)),
         );
     }
 }

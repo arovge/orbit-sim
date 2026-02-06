@@ -123,5 +123,5 @@ fn drag_end(
     };
 
     asteroid.0 = (end_position - start_position) * MOUSE_SCALE;
-    next_state.set(GameState::InOrbit);
+    next_state.set(GameState::Orbit);
 }

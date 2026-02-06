@@ -11,18 +11,9 @@ impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (
-                handle_exit_key_press.run_if(
-                    input_just_pressed(KeyCode::KeyQ).or(input_just_pressed(KeyCode::Escape)),
-                ),
-                handle_reset_key_press.run_if(input_just_pressed(KeyCode::KeyR)),
-            ),
+            handle_reset_key_press.run_if(input_just_pressed(KeyCode::KeyR)),
         );
     }
-}
-
-fn handle_exit_key_press(mut writer: MessageWriter<AppExit>) {
-    writer.write(AppExit::Success);
 }
 
 fn handle_reset_key_press(
