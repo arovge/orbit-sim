@@ -50,6 +50,10 @@ impl Plugin for AsteroidDragPlugin {
             )
             .add_systems(
                 Update,
+                drag_over.run_if(in_state(GameState::AsteroidDragStarted)),
+            )
+            .add_systems(
+                Update,
                 drag_end.run_if(
                     in_state(GameState::AsteroidDragStarted)
                         .and(input_just_released(MouseButton::Left)),
@@ -83,6 +87,22 @@ fn drag_start(
 
     *drag_start = DragGesture::Dragging { start };
     next_state.set(GameState::AsteroidDragStarted);
+}
+
+fn drag_over(
+    windows: Query<&Window, With<PrimaryWindow>>,
+    cameras: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
+    mut drag_gesture: ResMut<DragGesture>,
+    mut gizmos: Gizmos,
+) {
+    let Some(start) = drag_gesture.start_position() else {
+        return;
+    };
+    let Some(position) = world_position_2d(&windows, &cameras) else {
+        drag_gesture.reset();
+        return;
+    };
+    gizmos.line_2d(start, position, Color::linear_rgb(1., 0., 0.));
 }
 
 fn drag_end(
