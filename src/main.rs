@@ -6,8 +6,9 @@ mod state;
 use bevy::input::common_conditions::input_just_pressed;
 use bevy::prelude::*;
 use commands::SpawnAsteroidCommand;
+use components::Velocity;
 use plugins::{
-    asteroid_drag::AsteroidDragPlugin, input::InputPlugin, orbit::PhysicsPlugin,
+    WithAsteroid, asteroid_drag::AsteroidDragPlugin, orbit::PhysicsPlugin,
     planet_editor::PlanetEditorPlugin, ui::UiPlugin,
 };
 use state::*;
@@ -18,7 +19,6 @@ fn main() {
         .add_plugins((
             AsteroidDragPlugin,
             DefaultPlugins,
-            InputPlugin,
             PhysicsPlugin,
             PlanetEditorPlugin,
             UiPlugin,
@@ -27,7 +27,12 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(
             Update,
-            quit.run_if(input_just_pressed(KeyCode::KeyQ).or(input_just_pressed(KeyCode::Escape))),
+            (
+                quit.run_if(
+                    input_just_pressed(KeyCode::KeyQ).or(input_just_pressed(KeyCode::Escape)),
+                ),
+                reset_state.run_if(input_just_pressed(KeyCode::KeyR)),
+            ),
         )
         .run();
 }
@@ -39,4 +44,12 @@ fn setup(mut commands: Commands) {
 
 fn quit(mut writer: MessageWriter<AppExit>) {
     writer.write(AppExit::Success);
+}
+
+fn reset_state(
+    mut asteroid: Single<&mut Velocity, WithAsteroid>,
+    mut next_state: ResMut<NextState<GameState>>,
+) {
+    asteroid.reset();
+    next_state.set(GameState::FollowingCursor);
 }

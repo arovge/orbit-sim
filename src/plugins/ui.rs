@@ -16,7 +16,7 @@ impl Plugin for UiPlugin {
 pub struct StateText;
 
 #[derive(Component)]
-pub struct CoordinatesText;
+pub struct Coordinates;
 
 fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
     let font = asset_server.load("fonts/clacon2.ttf");
@@ -57,7 +57,7 @@ fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
             right: Val::Px(15.),
             ..default()
         },
-        CoordinatesText,
+        Coordinates,
     ));
 }
 
@@ -70,7 +70,7 @@ fn update_state_text(
 
 fn update_coordinates_text(
     asteroid: Single<&Transform, WithAsteroid>,
-    mut coordinates: Single<&mut Text, With<CoordinatesText>>,
+    mut coordinates: Single<&mut Text, With<Coordinates>>,
 ) {
     let asteroid_translation = asteroid.translation;
     coordinates.0 = format!(

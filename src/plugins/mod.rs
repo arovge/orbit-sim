@@ -5,7 +5,6 @@ use bevy::window::PrimaryWindow;
 use crate::components::{Asteroid, Planet};
 
 pub mod asteroid_drag;
-pub mod input;
 pub mod orbit;
 pub mod planet_editor;
 pub mod ui;
