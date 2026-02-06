@@ -9,19 +9,25 @@ use bevy::window::PrimaryWindow;
 // Try refactoring match so this isn't needed
 const MOUSE_SCALE: f32 = 1e10;
 
-// TODO: Maybe this can be stored somewhere better. I originally wanted this to be part of
-// game state, but `derive(States) only supports fieldless enums`.
-// This doesn't really work with the type system and it should
-// Could do something with Local<T>. But then the start & end drag systems
-// would need to be combined into one. And there wouldn't be an easy way to update
-// The UI in the bottom right corner to say what's happening/get the asteroid
-// to stop following the planet when drag starts
-#[derive(Resource, Debug, Default)]
-struct AsteroidDragStartPosition(pub Option<Vec2>);
+#[derive(Resource, Default)]
+enum DragGesture {
+    #[default]
+    NotDragging,
+    Dragging {
+        start: Vec2,
+    },
+}
 
-impl AsteroidDragStartPosition {
+impl DragGesture {
+    fn start_position(&self) -> Option<Vec2> {
+        match self {
+            DragGesture::Dragging { start } => Some(start.clone()),
+            _ => None,
+        }
+    }
+
     fn reset(&mut self) {
-        self.0 = None;
+        *self = DragGesture::default();
     }
 }
 
@@ -29,7 +35,7 @@ pub struct AsteroidDragPlugin;
 
 impl Plugin for AsteroidDragPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(AsteroidDragStartPosition::default())
+        app.insert_resource(DragGesture::default())
             .add_systems(
                 Update,
                 handle_cursor_moved.run_if(
@@ -38,13 +44,13 @@ impl Plugin for AsteroidDragPlugin {
             )
             .add_systems(
                 Update,
-                handle_asteroid_drag_start.run_if(
+                drag_start.run_if(
                     in_state(GameState::FollowingCursor).and(input_just_pressed(MouseButton::Left)),
                 ),
             )
             .add_systems(
                 Update,
-                handle_asteroid_drag_end.run_if(
+                drag_end.run_if(
                     in_state(GameState::AsteroidDragStarted)
                         .and(input_just_released(MouseButton::Left)),
                 ),
@@ -65,37 +71,37 @@ fn handle_cursor_moved(
     asteroid.translation.y = position.y;
 }
 
-fn handle_asteroid_drag_start(
+fn drag_start(
     windows: Query<&Window, With<PrimaryWindow>>,
     cameras: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
-    mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
+    mut drag_start: ResMut<DragGesture>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    let Some(start_position) = world_position_2d(&windows, &cameras) else {
+    let Some(start) = world_position_2d(&windows, &cameras) else {
         return;
     };
 
-    asteroid_drag_start_position.0 = Some(start_position);
+    *drag_start = DragGesture::Dragging { start };
     next_state.set(GameState::AsteroidDragStarted);
 }
 
-fn handle_asteroid_drag_end(
+fn drag_end(
     windows: Query<&Window, With<PrimaryWindow>>,
     cameras: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
     mut asteroid: Single<&mut Velocity, WithAsteroid>,
-    mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
+    mut drag_gesture: ResMut<DragGesture>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
     let Some(end_position) = world_position_2d(&windows, &cameras) else {
-        asteroid_drag_start_position.reset();
+        drag_gesture.reset();
         next_state.set(GameState::FollowingCursor);
         return;
     };
 
-    let start_position = asteroid_drag_start_position.0.unwrap();
-    let x = end_position.x - start_position.x;
-    let y = end_position.y - start_position.y;
+    let Some(start_position) = drag_gesture.start_position() else {
+        return;
+    };
 
-    asteroid.0 = Vec2::new(x * MOUSE_SCALE, y * MOUSE_SCALE);
+    asteroid.0 = (end_position - start_position) * MOUSE_SCALE;
     next_state.set(GameState::InOrbit);
 }
