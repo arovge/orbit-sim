@@ -20,11 +20,11 @@ pub type WithAsteroid = (With<Asteroid>, Without<Planet>);
 ///
 /// Returns [`None`] if the cursor position is not on the primary window.
 pub fn world_position_2d(
-    window_query: &Query<&Window, With<PrimaryWindow>>,
-    camera_query: &Query<(&Camera, &GlobalTransform), With<Camera2d>>,
+    windows: &Query<&Window, With<PrimaryWindow>>,
+    cameras: &Query<(&Camera, &GlobalTransform), With<Camera2d>>,
 ) -> Option<Vec2> {
-    let cursor_position = window_query.single().ok()?.cursor_position()?;
-    let (camera, camera_transform) = camera_query.single().ok()?;
+    let cursor_position = windows.single().ok()?.cursor_position()?;
+    let (camera, camera_transform) = cameras.single().ok()?;
     camera
         .viewport_to_world_2d(camera_transform, cursor_position)
         .ok()

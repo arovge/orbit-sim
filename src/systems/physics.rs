@@ -4,7 +4,7 @@ use bevy::prelude::*;
 
 use super::{WithAsteroid, WithPlanet};
 
-const GRAVITATIONAL_CONSTANT: f32 = 6.674e-11;
+const GRAVITATIONAL_CONST: f32 = 6.674e-11;
 
 // TODO: Using this makes me feel like something is wrong somewhere
 // Try refactoring math so this isn't needed
@@ -16,32 +16,31 @@ impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (process_physics, check_for_collisions)
+            (tick_physics, check_for_collisions)
                 .chain()
                 .run_if(in_state(GameState::InOrbit)),
         );
     }
 }
 
-fn process_physics(
-    planets_query: Query<(&Transform, &Mass), WithPlanet>,
-    asteroids_query: Single<(&mut Transform, &mut Velocity), WithAsteroid>,
+fn tick_physics(
+    planets: Query<(&Transform, &Mass), WithPlanet>,
+    asteroid: Single<(&mut Transform, &mut Velocity), WithAsteroid>,
 ) {
-    let (mut asteroid_transform, mut asteroid_velocity) = asteroids_query.into_inner();
+    let (mut asteroid_transform, mut asteroid_velocity) = asteroid.into_inner();
 
-    for (planet_transform, planet_mass) in planets_query.iter() {
+    for (planet_transform, planet_mass) in planets.iter() {
         let distance = planet_transform
             .translation
             .distance(asteroid_transform.translation);
-        let gravity = GRAVITATIONAL_CONSTANT * (planet_mass.0 / distance.powi(2));
+        let gravity = GRAVITATIONAL_CONST * (planet_mass.0 / distance.powi(2));
 
         let dy = planet_transform.translation.y - asteroid_transform.translation.y;
         let dx = planet_transform.translation.x - asteroid_transform.translation.x;
         let theta = dy.atan2(dx);
 
-        let x_acceleration = theta.cos() * gravity;
-        let y_acceleration = theta.sin() * gravity;
-        asteroid_velocity.accelerate(x_acceleration, y_acceleration);
+        let acceleration = Vec2::new(theta.cos(), theta.sin()) * gravity;
+        asteroid_velocity.accelerate(acceleration);
 
         asteroid_transform.translation.x += asteroid_velocity.0.x * SLOW_RATIO;
         asteroid_transform.translation.y += asteroid_velocity.0.y * SLOW_RATIO;
@@ -50,12 +49,12 @@ fn process_physics(
 
 fn check_for_collisions(
     mut next_state: ResMut<NextState<GameState>>,
-    planets_query: Query<(&Transform, &Radius), WithPlanet>,
-    asteroids_query: Single<(&Transform, &mut Velocity, &Radius), WithAsteroid>,
+    planets: Query<(&Transform, &Radius), WithPlanet>,
+    asteroid: Single<(&Transform, &mut Velocity, &Radius), WithAsteroid>,
 ) {
-    let (asteroid_transform, mut asteroid_velocity, asteroid_radius) = asteroids_query.into_inner();
+    let (asteroid_transform, mut asteroid_velocity, asteroid_radius) = asteroid.into_inner();
 
-    for (planet_transform, planet_radius) in planets_query.iter() {
+    for (planet_transform, planet_radius) in planets.iter() {
         let asteroid_distance_to_planet = planet_transform
             .translation
             .distance(asteroid_transform.translation);

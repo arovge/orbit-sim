@@ -26,9 +26,9 @@ fn handle_exit_key_press(mut writer: MessageWriter<AppExit>) {
 }
 
 fn handle_reset_key_press(
-    mut asteroid_query: Single<&mut Velocity, WithAsteroid>,
+    mut asteroid: Single<&mut Velocity, WithAsteroid>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    asteroid_query.reset();
+    asteroid.reset();
     next_state.set(GameState::FollowingCursor);
 }

@@ -11,9 +11,8 @@ pub struct Radius(pub f32);
 pub struct Velocity(pub Vec2);
 
 impl Velocity {
-    pub fn accelerate(&mut self, x_acceleration: f32, y_acceleration: f32) {
-        self.0.x += x_acceleration;
-        self.0.y += y_acceleration;
+    pub fn accelerate(&mut self, acceleration: Vec2) {
+        self.0 += acceleration;
     }
 
     pub fn reset(&mut self) {

@@ -63,17 +63,17 @@ fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
 
 fn update_state_text(
     state: Res<State<GameState>>,
-    mut text_query: Single<&mut Text, With<StateText>>,
+    mut state_text: Single<&mut Text, With<StateText>>,
 ) {
-    text_query.0 = state.get().to_string();
+    state_text.0 = state.get().to_string();
 }
 
 fn update_coordinates_text(
-    asteroid_query: Single<&Transform, WithAsteroid>,
-    mut text_query: Single<&mut Text, With<CoordinatesText>>,
+    asteroid: Single<&Transform, WithAsteroid>,
+    mut coordinates: Single<&mut Text, With<CoordinatesText>>,
 ) {
-    let asteroid_translation = asteroid_query.translation;
-    text_query.0 = format!(
+    let asteroid_translation = asteroid.translation;
+    coordinates.0 = format!(
         "{0:.2}, {1:.2}",
         asteroid_translation.x, asteroid_translation.y
     );

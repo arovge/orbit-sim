@@ -53,25 +53,25 @@ impl Plugin for AsteroidDragPlugin {
 }
 
 fn handle_cursor_moved(
-    camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
-    window_query: Query<&Window, With<PrimaryWindow>>,
-    mut asteroid_query: Single<&mut Transform, WithAsteroid>,
+    windows: Query<&Window, With<PrimaryWindow>>,
+    cameras: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
+    mut asteroid: Single<&mut Transform, WithAsteroid>,
 ) {
-    let Some(position) = world_position_2d(&window_query, &camera_query) else {
+    let Some(position) = world_position_2d(&windows, &cameras) else {
         return;
     };
 
-    asteroid_query.translation.x = position.x;
-    asteroid_query.translation.y = position.y;
+    asteroid.translation.x = position.x;
+    asteroid.translation.y = position.y;
 }
 
 fn handle_asteroid_drag_start(
-    camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
-    window_query: Query<&Window, With<PrimaryWindow>>,
+    windows: Query<&Window, With<PrimaryWindow>>,
+    cameras: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
     mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    let Some(start_position) = world_position_2d(&window_query, &camera_query) else {
+    let Some(start_position) = world_position_2d(&windows, &cameras) else {
         return;
     };
 
@@ -80,13 +80,13 @@ fn handle_asteroid_drag_start(
 }
 
 fn handle_asteroid_drag_end(
-    camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
-    window_query: Query<&Window, With<PrimaryWindow>>,
-    mut asteroid_query: Single<&mut Velocity, WithAsteroid>,
+    windows: Query<&Window, With<PrimaryWindow>>,
+    cameras: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
+    mut asteroid: Single<&mut Velocity, WithAsteroid>,
     mut asteroid_drag_start_position: ResMut<AsteroidDragStartPosition>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    let Some(end_position) = world_position_2d(&window_query, &camera_query) else {
+    let Some(end_position) = world_position_2d(&windows, &cameras) else {
         asteroid_drag_start_position.reset();
         next_state.set(GameState::FollowingCursor);
         return;
@@ -96,6 +96,6 @@ fn handle_asteroid_drag_end(
     let x = end_position.x - start_position.x;
     let y = end_position.y - start_position.y;
 
-    asteroid_query.0 = Vec2::new(x * MOUSE_SCALE, y * MOUSE_SCALE);
+    asteroid.0 = Vec2::new(x * MOUSE_SCALE, y * MOUSE_SCALE);
     next_state.set(GameState::InOrbit);
 }

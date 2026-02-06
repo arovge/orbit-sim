@@ -45,28 +45,24 @@ fn handle_insert_mode_toggle(
 }
 
 fn handle_add_planet(
-    window_query: Query<&Window, With<PrimaryWindow>>,
-    camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
+    windows: Query<&Window, With<PrimaryWindow>>,
+    cameras: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
     mut commands: Commands,
 ) {
-    let position = world_position_2d(&window_query, &camera_query)
-        .unwrap()
-        .extend(0.);
+    let position = world_position_2d(&windows, &cameras).unwrap().extend(0.);
 
     commands.queue(SpawnPlanetCommand { position });
 }
 
 fn handle_remove_planet(
-    window_query: Query<&Window, With<PrimaryWindow>>,
-    camera_query: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
-    mut planets_query: Query<(Entity, &Transform, &Radius), WithPlanet>,
+    windows: Query<&Window, With<PrimaryWindow>>,
+    cameras: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
+    mut planets: Query<(Entity, &Transform, &Radius), WithPlanet>,
     mut commands: Commands,
 ) {
-    let position = world_position_2d(&window_query, &camera_query)
-        .unwrap()
-        .extend(0.);
+    let position = world_position_2d(&windows, &cameras).unwrap().extend(0.);
 
-    for (planet_entity, planet_transform, radius) in planets_query.iter_mut() {
+    for (planet_entity, planet_transform, radius) in planets.iter_mut() {
         let distance = planet_transform.translation.distance(position);
         if distance < radius.0 {
             commands.entity(planet_entity).despawn();
