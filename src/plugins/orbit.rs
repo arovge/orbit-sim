@@ -10,9 +10,9 @@ const GRAVITATIONAL_CONST: f32 = 6.674e-11;
 // Try refactoring math so this isn't needed
 const SLOW_RATIO: f32 = 1e-12;
 
-pub struct PhysicsPlugin;
+pub struct OrbitPlugin;
 
-impl Plugin for PhysicsPlugin {
+impl Plugin for OrbitPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,

@@ -8,7 +8,7 @@ use bevy::prelude::*;
 use commands::SpawnAsteroidCommand;
 use components::Velocity;
 use plugins::{
-    WithAsteroid, asteroid_drag::AsteroidDragPlugin, orbit::PhysicsPlugin,
+    WithAsteroid, asteroid_drag::AsteroidDragPlugin, orbit::OrbitPlugin,
     planet_editor::PlanetEditorPlugin, ui::UiPlugin,
 };
 use state::*;
@@ -19,7 +19,7 @@ fn main() {
         .add_plugins((
             AsteroidDragPlugin,
             DefaultPlugins,
-            PhysicsPlugin,
+            OrbitPlugin,
             PlanetEditorPlugin,
             UiPlugin,
         ))

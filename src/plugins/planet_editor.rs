@@ -50,7 +50,6 @@ fn handle_add_planet(
     mut commands: Commands,
 ) {
     let position = world_position_2d(&windows, &cameras).unwrap().extend(0.);
-
     commands.queue(SpawnPlanetCommand { position });
 }
 
