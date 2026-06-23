@@ -31,6 +31,8 @@ impl CelestialBody {
 pub struct SpawnAsteroidCommand;
 
 impl Command for SpawnAsteroidCommand {
+    type Out = ();
+
     fn apply(self, world: &mut bevy::prelude::World) {
         apply_command(world, CelestialBody::Asteroid);
     }
@@ -41,6 +43,8 @@ pub struct SpawnPlanetCommand {
 }
 
 impl Command for SpawnPlanetCommand {
+    type Out = ();
+
     fn apply(self, world: &mut bevy::prelude::World) {
         apply_command(
             world,

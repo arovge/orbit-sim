@@ -39,13 +39,14 @@ impl Plugin for AsteroidDragPlugin {
             .add_systems(
                 Update,
                 handle_cursor_moved.run_if(
-                    in_state(GameState::FollowingCursor).or(in_state(GameState::EditPlanets)),
+                    in_state(GameState::FollowingCursor).or_else(in_state(GameState::EditPlanets)),
                 ),
             )
             .add_systems(
                 Update,
                 drag_start.run_if(
-                    in_state(GameState::FollowingCursor).and(input_just_pressed(MouseButton::Left)),
+                    in_state(GameState::FollowingCursor)
+                        .and_then(input_just_pressed(MouseButton::Left)),
                 ),
             )
             .add_systems(
@@ -56,7 +57,7 @@ impl Plugin for AsteroidDragPlugin {
                 Update,
                 drag_end.run_if(
                     in_state(GameState::AsteroidDragStarted)
-                        .and(input_just_released(MouseButton::Left)),
+                        .and_then(input_just_released(MouseButton::Left)),
                 ),
             );
     }

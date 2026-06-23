@@ -15,10 +15,12 @@ impl Plugin for PlanetEditorPlugin {
             (
                 handle_insert_mode_toggle.run_if(input_just_pressed(KeyCode::KeyI)),
                 handle_add_planet.run_if(
-                    in_state(GameState::EditPlanets).and(input_just_pressed(MouseButton::Left)),
+                    in_state(GameState::EditPlanets)
+                        .and_then(input_just_pressed(MouseButton::Left)),
                 ),
                 handle_remove_planet.run_if(
-                    in_state(GameState::EditPlanets).and(input_just_pressed(MouseButton::Right)),
+                    in_state(GameState::EditPlanets)
+                        .and_then(input_just_pressed(MouseButton::Right)),
                 ),
             ),
         );

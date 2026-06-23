@@ -19,10 +19,10 @@ pub struct StateText;
 pub struct Coordinates;
 
 fn setup(asset_server: Res<AssetServer>, mut commands: Commands) {
-    let font = asset_server.load("fonts/clacon2.ttf");
+    let font = asset_server.load("fonts/clacon2.ttf").into();
     let text_font = TextFont {
         font,
-        font_size: 18.,
+        font_size: FontSize::Px(18.),
         ..default()
     };
     let text_color = TextColor(Color::WHITE);

@@ -29,7 +29,7 @@ fn main() {
             Update,
             (
                 quit.run_if(
-                    input_just_pressed(KeyCode::KeyQ).or(input_just_pressed(KeyCode::Escape)),
+                    input_just_pressed(KeyCode::KeyQ).or_else(input_just_pressed(KeyCode::Escape)),
                 ),
                 reset_state.run_if(input_just_pressed(KeyCode::KeyR)),
             ),
